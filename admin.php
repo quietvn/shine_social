@@ -29,10 +29,7 @@ $users = $users_db->getAllByScore();
 	</select><br>
 	<div style="width: 150px;float: left">Email: </div><input type="text" name="email" /><br>
 	<div style="width: 150px;float: left">Twitter handle: </div><input type="text" name="id_twitter" /><br>
-	<div style="width: 150px;float: left">Group: </div>
-	<select name="group">
-		<option value="1">1</option>
-	</select><br>
+	<div style="width: 150px;float: left">Group: </div><input type="text" name="groups" /><br>
 	<input type="submit">
 </form>
 
@@ -42,6 +39,7 @@ $users = $users_db->getAllByScore();
     <th>Server</th>
     <th>Email</th>
     <th>Twitter</th>
+    <th>Groups</th>
     <th>Old score</th>
     <th>Latest score</th>
     <th>Last sync</th>
@@ -53,6 +51,7 @@ $users = $users_db->getAllByScore();
 	    <td><?php echo $MONGO_CONFIG[ $user['id_server'] ]['name'];?></td>
 	    <td><?php echo $user['email'];?></td>
 	    <td><?php echo $user['id_twitter'];?></td>
+	    <td><?php echo $user['groups'];?></td>
 	    <td align="right"><?php echo round($user['old_score']/2.5);?></td>
 	    <td align="right"><?php echo round($user['current_score']/2.5);?></td>
 	    <td align="right"><?php echo $user['last_updated'];?></td>

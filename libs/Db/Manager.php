@@ -22,7 +22,18 @@ class DbManager {
 	}
 	
 	public function query($query) {
-		return mysql_query($query, $this->_link);
+		$return =  mysql_query($query, $this->_link);
+		$err = mysql_error($this->_link); 
+		if (!empty($err)) {
+			echo "MYSQL ERROR :: ";
+			print_r($err);
+		}
+		
+		return $return;
+	}
+	
+	public function getInsertedId() {
+		return mysql_insert_id($this->_link);
 	}
 	
 	public function fetchAll($query) {

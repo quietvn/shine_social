@@ -12,7 +12,12 @@ class MisfitUsers {
 	}
 	
 	public function getAllByScore() {
-		return $this->_db->fetchAll('SELECT * FROM users ORDER BY current_score DESC');
+		return $this->_db->fetchAll("SELECT users.*, 
+					GROUP_CONCAT(group_users.id_group ORDER BY group_users.id_group SEPARATOR ',') groups 
+				FROM users
+				LEFT JOIN group_users ON users.id = group_users.id_user 
+				GROUP BY users.id
+				ORDER BY current_score DESC");
 	}
 	
 	public function syncAll() {
@@ -26,7 +31,7 @@ class MisfitUsers {
 	
 	public function syncCurrentScores() {
 		$users = $this->getAll();		
-	
+		echo "=== UPDATING SCORE ===\n";	
 		foreach ($users as $user) {
 			$shine_id = new MongoId($user['id_shine']);
 			$mongo = MisfitMongo::getInstance($user['id_server'])->collection;
@@ -38,20 +43,7 @@ class MisfitUsers {
 				$this->updateScore($user, $shine_id, $goal);
 			}
 		}
-	}
-	
-	public function syncCurrentScoresOld() {
-		$shine_ids = $this->getShineIds();
-		$mongo = MisfitMongo::getInstance()->collection;
-				
-		foreach ($shine_ids as $shine_id) {
-			$query = array( "uid" => $shine_id);		
-			$goal = $mongo->goals->find($query)->sort(array('st' => -1))->limit(1);
-			if ($goal->hasNext()) {
-				$goal = $goal->getNext();
-				$this->updateScore($shine_id, $goal);
-			}
-		}
+		echo "=== UPDATING SCORE ===\n\n";
 	}
 	
 	public function updateScore($user, $shine_id, $goal) {
@@ -81,12 +73,28 @@ class MisfitUsers {
 			$mongo = MisfitMongo::getInstance($data['id_server'])->collection;
 			$shine_user = $mongo->users->findOne(array('email' => $data['email']));
 			if (!empty($shine_user)) {
-				$query = "INSERT INTO users(id_server,id_shine,email,id_group,id_twitter)
-					VALUES ('".$data['id_server']."','".$shine_user['_id']->{'$id'}."', '".$data['email']."', '".$data['group']."', '".$data['id_twitter']."')";
-				return $this->_db->query($query);					
+				$query = "INSERT INTO users(id_server,id_shine,email,id_twitter)
+					VALUES ('".$data['id_server']."','".$shine_user['_id']->{'$id'}."', '".$data['email']."', '".$data['id_twitter']."')";
+				$this->_db->query($query);
+				$id_user = $this->_db->getInsertedId();
+				$this->addNewUserGroups($id_user, $data['groups']);					
 			} else {
 				echo "Cannot find Shine user!";
 			}
+		}
+	}
+	
+	public function addNewUserGroups($id_user, $groups) {
+		echo "Insert $id_user to group $groups";
+		if (empty($groups)) {
+			$id_groups = array(1);
+		} else {
+			$id_groups = explode(',', $groups);
+		}
+		
+		foreach ($id_groups as $id_group) {
+			$this->_db->query("INSERT INTO group_users (id_user, id_group)
+				VALUES ($id_user, $id_group)");
 		}
 	}
 	
@@ -96,5 +104,17 @@ class MisfitUsers {
 	
 	public function delete($id) {
 		return $this->_db->query("DELETE FROM users WHERE id=" . $id);
+	}
+	
+	public function getAllByGroup() {
+		$users = $this->_db->fetchAll("SELECT group_users.id_group, users.* FROM users
+				INNER JOIN group_users ON users.id = group_users.id_user
+				ORDER BY current_score DESC");
+		$result = array();
+		foreach ($users as $user) {
+			$result[ $user['id_group'] ] [] = $user;
+		}
+		
+		return $result;
 	}
 }
