@@ -1,6 +1,12 @@
 <?php
 class MisfitMessage {
 	static public function ApassedB($a, $b) {
+		$aPoint = round($a['current_score']/2.5);
+		$points = round($a['current_score']/2.5) - round($b['current_score']/2.5);
+		return "@{$a['id_twitter']} now has $aPoint points, passing @{$b['id_twitter']} by $points points!";
+	}
+	
+	static public function AcreepedPassedB($a, $b) {
 		$points = round($a['current_score']/2.5) - round($b['current_score']/2.5);
 		return "@{$a['id_twitter']} just creeped past @{$b['id_twitter']} with $points points!";
 	}
@@ -25,6 +31,6 @@ class MisfitMessage {
 	
 	static public function AneckB($a, $b) {
 		$points = round($a['current_score']/2.5);
-		return "@{$a['id_twitter']} and @{$b['id_twitter']} are neck to neck with $points points!";
+		return "@{$a['id_twitter']} and @{$b['id_twitter']} are neck and neck with $points points!";
 	}
 }

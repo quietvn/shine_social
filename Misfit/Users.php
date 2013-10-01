@@ -73,15 +73,25 @@ class MisfitUsers {
 	}
 	
 	public function addNewUser($data) {
-		$mongo = MisfitMongo::getInstance($data['id_server'])->collection;
-		$shine_user = $mongo->users->findOne(array('email' => $data['email']));
-		if (!empty($shine_user)) {
-			$query = "INSERT INTO users(id_server,id_shine,email,id_group,id_twitter)
-				VALUES ('".$data['id_server']."','".$shine_user['_id']->{'$id'}."', '".$data['email']."', '".$data['group']."', '".$data['id_twitter']."')";
-			return $this->_db->query($query);					
+		$existingUser = $this->findOne($data);
+		
+		if (!empty($existingUser)) {
+			echo "Cannot add the same user in the same server!";
 		} else {
-			echo "Cannot find Shine user!";
+			$mongo = MisfitMongo::getInstance($data['id_server'])->collection;
+			$shine_user = $mongo->users->findOne(array('email' => $data['email']));
+			if (!empty($shine_user)) {
+				$query = "INSERT INTO users(id_server,id_shine,email,id_group,id_twitter)
+					VALUES ('".$data['id_server']."','".$shine_user['_id']->{'$id'}."', '".$data['email']."', '".$data['group']."', '".$data['id_twitter']."')";
+				return $this->_db->query($query);					
+			} else {
+				echo "Cannot find Shine user!";
+			}
 		}
+	}
+	
+	public function findOne($data) {
+		return $this->_db->fetchOne("SELECT * FROM users WHERE id_server='".$data['id_server']."' AND email='".$data['email']."'");
 	}
 	
 	public function delete($id) {

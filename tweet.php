@@ -16,7 +16,7 @@ $twitter = MisfitTwitter::getInstance();
 $users = $users_db->getAllByScore();
 for ($i=0; ($i+1)<sizeof($users); $i++) {
 	$user = $users[$i];
-	if ($user['current_score'] != $user['old_score']) { // if new score is updated		
+	if ($user['current_score'] > $user['old_score']) { // if new score is updated		
 		
 		$passed = getPassedUsers($users, $i);
 		if (sizeof($passed) > 0) {
@@ -34,8 +34,12 @@ for ($i=0; ($i+1)<sizeof($users); $i++) {
 			else if ($user['current_score'] == $users[$i+1]['current_score'])
 				$message = MisfitMessage::AneckB($user, $users[$i+1]);
 			
-			// rule #4: A passed B
-			else if ($user['current_score'] > $passed[0]['current_score'])
+			// rule #4: A passed B by less than 50 points
+			else if (round($user['current_score']/2.5) - round($passed[0]['current_score']/2.5) <= 50)
+				$message = MisfitMessage::AcreepedPassedB($user, $passed[0]);
+			
+			// rule #5: A passed B by more than 50 points
+			else if (round($user['current_score']/2.5) - round($passed[0]['current_score']/2.5) > 50)
 				$message = MisfitMessage::ApassedB($user, $passed[0]);
 			
 			if ($message != '') {
@@ -46,7 +50,7 @@ for ($i=0; ($i+1)<sizeof($users); $i++) {
 		
 		$behinds = getBehindUsers($users, $i);
 		if (sizeof($behinds) > 0) {
-			// rule #5: A behind B by 30 points
+			// rule #6: A behind B by 30 points
 			$message = MisfitMessage::AbehindB($user, $behinds[0]);
 			echo 'Tweeting: ' . $message . "\n";
 			$twitter->send($message);
@@ -63,6 +67,7 @@ function getPassedUsers($users, $i) {
 		$loser = $users[$j];
 		if (($user['old_score'] <= $loser['old_score']) // if previously, $user.score <= $loser.score
 				&& ($user['current_score'] > $loser['current_score']) // and now $user.score > $loser.score
+				&& ($loser['current_score'] > 0) // and $loser.score > 0
 		) {
 			$passed[] = $loser;
 			if (sizeof($passed) == 5) break; // get max 5 passed losers

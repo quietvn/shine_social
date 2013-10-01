@@ -33,4 +33,12 @@ class DbManager {
 		}
 		return $result;
 	}
+	
+	public function fetchOne($query) {
+		$resultset = $this->query($query);
+		if ($row = @mysql_fetch_assoc($resultset)) {
+			return $row;
+		}
+		return null;
+	}
 }
