@@ -73,7 +73,8 @@ class MisfitUsers {
 		$existingUser = $this->findOne($data);
 		
 		if (!empty($existingUser)) {
-			echo "Cannot add the same user in the same server!";
+			//echo "Cannot add the same user in the same server!";
+			$this->addNewUserGroups($existingUser['id'], $data['groups']);
 		} else {
 			$mongo = MisfitMongo::getInstance($data['id_server'])->collection;
 			$shine_user = $mongo->users->findOne(array('email' => $data['email']));
