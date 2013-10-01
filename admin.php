@@ -7,6 +7,7 @@ include_once 'Misfit/Twitter.php';
 include_once 'Misfit/Mongo.php';
 
 $action = isset($_GET['action']) ? $_GET['action'] : '';
+$f_id_group = isset($_GET['f_id_group']) ? $_GET['f_id_group'] : 0;
 
 $users_db = new MisfitUsers();
 if (!empty($_POST) && !empty($_POST['email'])) {
@@ -17,7 +18,7 @@ if ($action == 'delete') {
 	$users_db->delete($_GET['id']);
 }
 
-$users = $users_db->getAllByScore();
+$users = $users_db->getAllByScore($f_id_group);
 ?>
 
 <h3>Add new Shine user:</h3>
@@ -29,11 +30,20 @@ $users = $users_db->getAllByScore();
 	</select><br>
 	<div style="width: 150px;float: left">Email: </div><input type="text" name="email" /><br>
 	<div style="width: 150px;float: left">Twitter handle: </div><input type="text" name="id_twitter" /><br>
-	<div style="width: 150px;float: left">Group: </div><input type="text" name="groups" /> 
+	<div style="width: 150px;float: left">Group(s): </div><input type="text" name="groups" /> 
 		Comma separated value. Example: 1,2,3 OR 2<br>
 	<input type="submit">
 </form>
+<hr>
+Show users in Group: 
+<select id="f_id_group" name="f_id_group" onchange="window.location='?f_id_group=' + this.value;">
+	<option value="0">-all-</option>
+	<option value="1">1</option>
+	<option value="2">2</option>
+	<option value="3">3</option>
+</select>
 
+<br><br>
 <table cellpadding="5px" cellspacing=0 border="1px;solid">
   <tr>
     <th>#</th>
@@ -68,4 +78,6 @@ $users = $users_db->getAllByScore();
 			window.location = '?action=delete&id=' + id;
 		}
 	}
+
+	document.getElementById('f_id_group').value=<?php echo $f_id_group;?>;
 </script>

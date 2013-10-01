@@ -11,11 +11,16 @@ class MisfitUsers {
 		return $this->_db->fetchAll('SELECT * FROM users');
 	}
 	
-	public function getAllByScore() {
+	public function getAllByScore($id_group) {
+		$where = '';
+		if (!empty($id_group))
+			$where = "WHERE id_group=$id_group";
+		
 		return $this->_db->fetchAll("SELECT users.*, 
 					GROUP_CONCAT(group_users.id_group ORDER BY group_users.id_group SEPARATOR ',') groups 
 				FROM users
-				LEFT JOIN group_users ON users.id = group_users.id_user 
+				LEFT JOIN group_users ON users.id = group_users.id_user
+				$where 
 				GROUP BY users.id
 				ORDER BY current_score DESC");
 	}
@@ -85,7 +90,6 @@ class MisfitUsers {
 	}
 	
 	public function addNewUserGroups($id_user, $groups) {
-		echo "Insert $id_user to group $groups";
 		if (empty($groups)) {
 			$id_groups = array(1);
 		} else {
