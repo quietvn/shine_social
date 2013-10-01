@@ -29,7 +29,8 @@ $users = $users_db->getAllByScore();
 	</select><br>
 	<div style="width: 150px;float: left">Email: </div><input type="text" name="email" /><br>
 	<div style="width: 150px;float: left">Twitter handle: </div><input type="text" name="id_twitter" /><br>
-	<div style="width: 150px;float: left">Group: </div><input type="text" name="groups" /><br>
+	<div style="width: 150px;float: left">Group: </div><input type="text" name="groups" /> 
+		Comma separated value. Example: 1,2,3 OR 2<br>
 	<input type="submit">
 </form>
 
