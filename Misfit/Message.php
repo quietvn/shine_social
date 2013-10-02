@@ -42,7 +42,7 @@ class MisfitMessage {
 	/////////////////////////////
 	static public function ApassedProgress($a, $progress) {
 		$tag = self::getProgressTag($progress);
-		return "@{$a['id_twitter']}  just helped push the team's progress past {$progress}0%. #{$tag}";
+		return "@{$a['id_twitter']} just helped push the team's progress past {$progress}0%. {$tag}";
 	}
 	
 	static public function getProgressTag($progress) {
