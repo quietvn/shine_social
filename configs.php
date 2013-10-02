@@ -36,3 +36,8 @@ $MONGO_CONFIG = array(
 		'collection' => 'shine')	
 );
 global $MONGO_CONFIG;
+
+define("TIMEZONE", "US/Pacific");
+define("TIMEZONE_OFFSET", "-07:00");
+
+date_default_timezone_set(TIMEZONE);

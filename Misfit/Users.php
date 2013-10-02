@@ -36,28 +36,39 @@ class MisfitUsers {
 	
 	public function syncCurrentScores() {
 		$users = $this->getAll();		
-		echo "=== UPDATING SCORE ===\n";	
+		Logger::log("=== UPDATING SCORE ===");	
 		foreach ($users as $user) {
 			$shine_id = new MongoId($user['id_shine']);
 			$mongo = MisfitMongo::getInstance($user['id_server'])->collection;
 			
-			$query = array( "uid" => $shine_id);
-			$goal = $mongo->goals->find($query)->sort(array('st' => -1))->limit(1);			
+			$query = array( "uid" => $shine_id, 
+					//"st" => strtotime(date("Y-m-d 00:00:00"))
+			);
+			$goal = $mongo->goals->find($query)->sort(array('st' => -1))->limit(1);
+			$points = 0;
 			if ($goal->hasNext()) {
 				$goal = $goal->getNext();
-				$this->updateScore($user, $shine_id, $goal);
+				if (!empty($goal['prgd']['points']))
+					$points = $goal['prgd']['points'];				
 			}
+			
+			$this->updateScore($user, $points);
+			
 		}
-		echo "=== UPDATING SCORE ===\n\n";
+		Logger::log("=== UPDATING SCORE ===");
 	}
 	
-	public function updateScore($user, $shine_id, $goal) {
-		if (empty($goal['prgd']['points']))
-			$goal['prgd']['points'] = 0;
+	public function updateScore($user, $points) {
+		
+		$new = '';
+		if ($points != $user['old_score']) {
+			$new = " (NEW)";
+		}
 		
 		global $MONGO_CONFIG;
-		echo "UPDATING ".$user['email']." [".$MONGO_CONFIG[ $user['id_server'] ]['name']."] TO ".$goal['prgd']['points']." \n";
-		return $this->_db->query("UPDATE users SET current_score = ".$goal['prgd']['points']." WHERE id_shine = '".$shine_id."'");
+		
+		Logger::log("UPDATING ".$user['email']." [".$MONGO_CONFIG[ $user['id_server'] ]['name']."] TO ".$points.$new);
+		return $this->_db->query("UPDATE users SET current_score = ".$points." WHERE id_shine = '".$user['id_shine']."'");
 	}
 	
 	public function getShineIds() {
@@ -120,6 +131,48 @@ class MisfitUsers {
 			$result[ $user['id_group'] ] [] = $user;
 		}
 		
+		return $result;
+	}
+	
+	public function getTotalScoreSince($users, $start_time) {
+		$result = array();
+		$total_points = 0;		
+		$user_points = array();
+		$highest_user = array("total_points" => -1);
+		$weakest_user = array("total_points" => PHP_INT_MAX);
+		
+		foreach ($users as $user) {		
+			$mongo = MisfitMongo::getInstance($user['id_server'])->collection;
+			$uid = new MongoId($user['id_shine']);
+			$query = array( "uid" => $uid,
+					"et" => array('$gt' => strtotime($start_time))
+			);
+			$goals = $mongo->goals->find($query)->sort(array('st' => -1))->limit(1);
+			$points = 0;
+			while ($goals->hasNext()) {
+				$goal = $goals->getNext();
+				if (!empty($goal['prgd']['points']))
+					$points += round($goal['prgd']['points'] / 2.5);
+			}
+			
+			$total_points += $points;
+			$user['total_points'] = $points;
+			$user_points[ $user['id'] ] = $user;
+			
+			if($user['total_points'] > $highest_user['total_points'])
+				$highest_user = $user;
+			
+			if($user['total_points'] < $weakest_user['total_points'])
+				$weakest_user = $user;
+			
+			Logger::log("User {$user['email']} has total {$points} points.");
+		}
+		Logger::log("This group has total {$total_points} points.");
+		
+		$result['total'] = $total_points;
+		$result['users'] = $user_points;
+		$result['highest_user'] = $highest_user;
+		$result['weakest_user'] = $weakest_user;
 		return $result;
 	}
 }

@@ -1,7 +1,7 @@
 <?php
 include_once ('ExpCheckerAbstract.php');
 class MisfitExpChecker2 extends MisitExpCheckerAbstract {
-	public function checkEvent($users) {
+	public function checkEvent($exp, $users) {
 		for ($i=0; ($i+1)<sizeof($users); $i++) {
 			$user = $users[$i];
 			if ($user['current_score'] > $user['old_score']) { // if new score is updated
@@ -31,7 +31,6 @@ class MisfitExpChecker2 extends MisitExpCheckerAbstract {
 						$message = MisfitMessage::ApassedB($user, $passed[0]);
 						
 					if ($message != '') {
-						echo 'Tweeting: ' . $message . "\n";
 						$this->_twitter->send($message);
 					}
 				}
@@ -40,7 +39,6 @@ class MisfitExpChecker2 extends MisitExpCheckerAbstract {
 				if (sizeof($behinds) > 0) {
 					// rule #6: A behind B by 30 points
 					$message = MisfitMessage::AbehindB($user, $behinds[0]);
-					echo 'Tweeting: ' . $message . "\n";
 					$this->_twitter->send($message);
 				}
 			}

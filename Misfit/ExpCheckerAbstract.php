@@ -9,7 +9,7 @@ class MisitExpCheckerAbstract {
 		$this->_twitter = MisfitTwitter::getInstance($handle);
 	}
 	
-	public function checkEvent($users) {
+	public function checkEvent($exp, $users) {
 		// check if an interesting event happens, then send tweet message
 	}
 	

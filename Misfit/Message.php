@@ -1,5 +1,8 @@
 <?php
 class MisfitMessage {
+	/////////////////////////////
+	// Messages for experiment #2
+	/////////////////////////////
 	static public function ApassedB($a, $b) {
 		$aPoint = round($a['current_score']/2.5);
 		$points = round($a['current_score']/2.5) - round($b['current_score']/2.5);
@@ -32,5 +35,40 @@ class MisfitMessage {
 	static public function AneckB($a, $b) {
 		$points = round($a['current_score']/2.5);
 		return "@{$a['id_twitter']} and @{$b['id_twitter']} are neck and neck with $points points!";
+	}
+	
+	/////////////////////////////
+	// Messages for experiment #3
+	/////////////////////////////
+	static public function ApassedProgress($a, $progress) {
+		$tag = self::getProgressTag($progress);
+		return "@{$a['id_twitter']}  just helped push the team's progress past {$progress}0%. #{$tag}";
+	}
+	
+	static public function getProgressTag($progress) {
+		$progress_tags = array(
+			1 => "#gettingwarmedup",
+			2 => "#offtotheraces",
+			3 => "#livingonaprayer",
+			4 => "#dontstopbelievin",
+			5 => "#werehalfwaythere",
+			6 => "#wecantstop",
+			7 => "#lifeisahighway",
+			8 => "#dontkillourvibe",
+			9 => "#touchthesky",
+		);
+		return $progress_tags[$progress];
+	}
+	
+	static public function AmetGoal($a) {
+		return "Team challenge completed!  Made it all the way across California.  #shine #likeaboss";
+	}
+	
+	static public function wrapUp($exp, $total_percent, $highest, $weakest) {
+		return "Team Challenge Summary: {$exp['current_score']} points achieved {$total_percent}% of goal. Top contributor: @{$highest['id_twitter']}. Weakest Link: @{$weakest['id_twitter']}";
+	}
+	
+	static public function initGroup($exp) {
+		return "This week's challenge is to walk across California together ({$exp['goal']} pts or {$exp['goal']} steps). Go for it!";
 	}
 }
