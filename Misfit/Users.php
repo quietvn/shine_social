@@ -42,7 +42,7 @@ class MisfitUsers {
 			$mongo = MisfitMongo::getInstance($user['id_server'])->collection;
 			
 			$query = array( "uid" => $shine_id, 
-					//"st" => strtotime(date("Y-m-d 00:00:00"))
+					"et" => array('$gt' => time())
 			);
 			$goal = $mongo->goals->find($query)->sort(array('st' => -1))->limit(1);
 			$points = 0;
