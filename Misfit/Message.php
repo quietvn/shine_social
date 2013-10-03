@@ -37,6 +37,24 @@ class MisfitMessage {
 		return "@{$a['id_twitter']} and @{$b['id_twitter']} are neck and neck with $points points!";
 	}
 	
+	static public function summary2($rank, $user, $target_twitter) {
+		$id_twitter = $user['id_twitter'];
+		$points = $user['points'];
+		
+		$messages = array(
+			8 => "@$id_twitter came in 8th place with $points points. Visit @$target_twitter to see the full leaderboard.",
+			7 => "@$id_twitter came in 7th place with $points points. Visit @$target_twitter to see the full leaderboard.",
+			6 => "@$id_twitter came in 6th place with $points points. Visit @$target_twitter to see the full leaderboard.",
+			5 => "@$id_twitter came in 5th place with $points points, valiant effort. Visit @$target_twitter to see the full leaderboard.",
+			4 => "@$id_twitter came in 4th place with $points points, just shy of the podium! Visit @$target_twitter to see the full leaderboard.",
+			3 => "@$id_twitter came in 3rd place with $points points, nice one. Visit @$target_twitter to see the full leaderboard.",
+			2 => "@$id_twitter came in 2nd place with $points points, great work! Visit @$target_twitter to see the full leaderboard.",
+			1 => "@$id_twitter came in 1st place with $points points, way to go! Visit @$target_twitter to see the full leaderboard.",
+		);
+		
+		return $messages[$rank];
+	}
+	
 	/////////////////////////////
 	// Messages for experiment #3
 	/////////////////////////////

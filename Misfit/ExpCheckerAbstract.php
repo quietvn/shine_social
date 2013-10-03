@@ -13,6 +13,10 @@ class MisitExpCheckerAbstract {
 		// check if an interesting event happens, then send tweet message
 	}
 	
+	public function checkMorningEvent($exp, $users) {
+		// every morning, check summary leaderboard and send tweet message
+	}
+	
 	function getPassedUsers($users, $i) {
 		$passed = array();
 		$user = $users[$i];

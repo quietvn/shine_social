@@ -58,6 +58,9 @@ class MisfitExpChecker3 extends MisitExpCheckerAbstract {
 		// Rule #1: Week initiation tweet.  Should be at Monday 9AM PST.
 			$this->_twitter->send(MisfitMessage::initGroup($exp));
 		}
+		
+		$leaderboard_db = new MisfitLeaderboard();
+		$leaderboard_db->updateLeaderboard($exp, $total_scores['users'], 'total_points', 'user');
 	}
 	
 	public function getSyncedUsers($users) {

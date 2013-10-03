@@ -44,5 +44,20 @@ class MisfitExpChecker2 extends MisitExpCheckerAbstract {
 				}
 			}
 		}
+		
+		$leaderboard_db = new MisfitLeaderboard();
+		$leaderboard_db->updateLeaderboard($exp, $users);
+	}
+	
+	public function checkMorningEvent($exp, $users) {
+		$leaderboard_db = new MisfitLeaderboard();
+		$leaderboard = $leaderboard_db->getYesterdayLeaderboard($exp);
+			
+		foreach ($leaderboard as $i => $user) {
+			if ($user['points'] == 0) break;
+			
+			$message = MisfitMessage::summary2($i+1, $user, $exp['id_twitter']);
+			$this->_twitter->send($message);
+		}
 	}
 }

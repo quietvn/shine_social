@@ -8,6 +8,7 @@ include_once 'Misfit/Users.php';
 include_once 'Misfit/Exps.php';
 include_once 'Misfit/ExpChecker2.php';
 include_once 'Misfit/ExpChecker3.php';
+include_once 'Misfit/Leaderboard.php';
 
 Logger::log("STARTED");
 
