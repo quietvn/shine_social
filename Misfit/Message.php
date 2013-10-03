@@ -89,4 +89,16 @@ class MisfitMessage {
 	static public function initGroup($exp) {
 		return "This week's challenge is to walk across California together ({$exp['goal']} pts or {$exp['goal']} steps). Go for it!";
 	}
+	
+	static public function dailyMetGoal() {
+		return "Way to go, the team is on track to complete the challenge. Keep it up.";
+	}
+	
+	static public function dailyBehindGoal($expected_percentage) {
+		return "Step it up! To complete the challenge, the team will need to be $expected_percentage% more active than yesterday.";
+	}
+	
+	static public function dailyMVP($highest_user, $weakest_user) {
+		return "Way to go @{$highest_user['id_twitter']}, you were yesterday's point leader with 450 points. @{$weakest_user['id_twitter']} can you beat that?";
+	}
 }

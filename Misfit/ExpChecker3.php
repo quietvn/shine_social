@@ -77,4 +77,75 @@ class MisfitExpChecker3 extends MisitExpCheckerAbstract {
 		list($date,$time) = explode(" ", $datetime);
 		return $date;
 	}
+	
+	public function checkMorningEvent($exp, $users) {
+		$leaderboard_db = new MisfitLeaderboard();
+		$leaderboard = $leaderboard_db->getYesterdayLeaderboard($exp);
+		
+		if (empty($leaderboard)) return;
+		
+		$now = time();
+		$diff = $now - strtotime($exp['start_date']);
+		$passed_days = floor($diff/3600/24);
+		$passed_hours = round(($diff/3600) % 24);
+		$expected_points = $exp['goal'] * ($passed_days / 7);
+		
+		Logger::log("Group goal: {$exp['goal']} points");
+		Logger::log("Group has passed " .$passed_days. " days ".$passed_hours." hours");			
+		Logger::log("Group expected weekly points: " . $expected_points);
+		
+		if ($passed_days > 0) {
+			$summary = $this->getSummaryPoints($leaderboard);
+			
+			$total_weekly_points = $summary['total_weekly_points'];
+			$total_yesterday_points = $summary['total_yesterday_points'];
+			
+			
+			$remaining_points = $exp['goal'] - $total_weekly_points;
+			$remaining_days = 7 - $passed_days;
+			$remaining_daily_points = $remaining_points / $remaining_days;
+			
+			// Rule #3a Yesterday team did not meet goal
+			if ($total_weekly_points < $expected_points) {
+				$expected_percentage = round(100*($remaining_daily_points - $total_yesterday_points) / $total_yesterday_points);
+				
+				$message = MisfitMessage::dailyBehindGoal($expected_percentage);
+				$this->_twitter->send($message);
+			}
+			// Rule #3a Yesterday team did meet goal
+			else {				
+				$message = MisfitMessage::dailyMetGoal();
+				$this->_twitter->send($message);
+			}
+			
+			// Rule #4: Daily MVP: mention best and weakest contributors
+			$this->_twitter->send(MisfitMessage::dailyMVP($summary['highest_user'], $summary['weakest_user']));
+		}
+	}
+	
+	public function getSummaryPoints($leaderboard) {
+		$result = array();
+		$result['total_weekly_points'] = 0;
+		$result['total_yesterday_points'] = 0;
+		$result['highest_user'] = $leaderboard[0];
+		$result['weakest_user'] = $leaderboard[0];
+		
+		foreach ($leaderboard as $user) {
+			$result['total_weekly_points'] += $user['weekly_points'];
+			$result['total_yesterday_points'] += $user['points'];
+			
+			if ($user['points'] > $result['highest_user']['points'])
+				$result['highest_user'] = $user;
+			
+			if ($user['points'] < $result['weakest_user']['points'])
+				$result['weakest_user'] = $user;
+		}
+		
+		Logger::log("Total weekly points: " . $result['total_weekly_points']);
+		Logger::log("Total yesterday points: " . $result['total_yesterday_points']);
+		Logger::log("Best contributor: " . $result['highest_user']['id_twitter'] ." with ".$result['highest_user']['points']." points");
+		Logger::log("Weakest contributor: " . $result['weakest_user']['id_twitter'] ." with ".$result['weakest_user']['points']." points");
+		
+		return $result;
+	}
 }

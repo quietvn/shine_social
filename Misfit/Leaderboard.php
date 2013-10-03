@@ -5,19 +5,16 @@ class MisfitLeaderboard extends MisfitDbModelAbstract {
 	public function updateLeaderboard($exp, $users, $point_column = 'current_score', $point_system = 'system') {
 		Logger::log("Updating Leaderboard for group {$exp['id_group']} - exp {$exp['id_exp']}");
 		$date = date("Y-m-d");
-		foreach ($users as $user) {
-			
-			if ($point_system == 'system') {
-				$points = round($user[$point_column] / 2.5);
-			} else {
-				$points = $user[$point_column];
-			}
+		foreach ($users as $user) {			
+			$points = round($user['current_score'] / 2.5);			
+			$weekly_points = isset($user['total_points']) ? $user['total_points'] : 0;
 			
 			$this->query("
-				INSERT INTO leaderboard (id_exp, id_group, last_date, id_user, points)
-				VALUES ({$exp['id_exp']}, {$exp['id_group']}, '$date', {$user['id']}, {$points})
+				INSERT INTO leaderboard (id_exp, id_group, last_date, id_user, points, weekly_points)
+				VALUES ({$exp['id_exp']}, {$exp['id_group']}, '$date', {$user['id']}, {$points}, {$weekly_points})
 				ON DUPLICATE KEY
-					UPDATE points = {$points}
+					UPDATE points = {$points},
+						weekly_points = {$weekly_points}
 			");
 		}
 	}
