@@ -119,8 +119,9 @@ class MisfitUsers {
 		
 		if (!empty($id_groups)) {
 			foreach ($id_groups as $id_group) {
-				$this->_db->query("INSERT INTO group_users (id_user, id_group)
-					VALUES ($id_user, $id_group)");
+				if (!empty($id_group))
+					$this->_db->query("INSERT INTO group_users (id_user, id_group)
+						VALUES ($id_user, '$id_group')");
 			}
 		}
 	}
