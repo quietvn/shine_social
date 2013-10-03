@@ -87,7 +87,8 @@ class MisfitMessage {
 	}
 	
 	static public function initGroup($exp) {
-		return "This week's challenge is to walk across California together ({$exp['goal']} pts or {$exp['goal']} steps). Go for it!";
+		$steps = 4*$exp['goal'];
+		return "This week's challenge is to walk across California together ({$exp['goal']} pts or {$steps} steps). Go for it!";
 	}
 	
 	static public function dailyMetGoal() {
