@@ -17,7 +17,7 @@ class MisfitLeaderboard extends MisfitDbModelAbstract {
 				INSERT INTO leaderboard (id_exp, id_group, last_date, id_user, points)
 				VALUES ({$exp['id_exp']}, {$exp['id_group']}, '$date', {$user['id']}, {$points})
 				ON DUPLICATE KEY
-					UPDATE points = {$user[$point_column]}
+					UPDATE points = {$points}
 			");
 		}
 	}
