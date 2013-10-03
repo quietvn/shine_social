@@ -67,7 +67,7 @@ class MisfitUsers {
 		
 		global $MONGO_CONFIG;
 		
-		Logger::log("UPDATING ".$user['email']." [".$MONGO_CONFIG[ $user['id_server'] ]['name']."] TO ".$points.$new);
+		Logger::log("UPDATING ".$user['email']." [".$MONGO_CONFIG[ $user['id_server'] ]['name']."] TO ".$points." | " . round($points/2.5) . $new);
 		return $this->_db->query("UPDATE users SET current_score = ".$points." WHERE id_shine = '".$user['id_shine']."'");
 	}
 	

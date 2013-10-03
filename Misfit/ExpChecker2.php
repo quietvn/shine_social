@@ -4,7 +4,8 @@ class MisfitExpChecker2 extends MisitExpCheckerAbstract {
 	public function checkEvent($exp, $users) {
 		for ($i=0; ($i+1)<sizeof($users); $i++) {
 			$user = $users[$i];
-			if ($user['current_score'] > $user['old_score']) { // if new score is updated
+			if ($user['current_score'] > $user['old_score'] // if new score is updated
+					&& round($user['current_score'] / 2.5) >= 50) { // and new score is >= 50 
 		
 				$passed = $this->getPassedUsers($users, $i);
 				if (sizeof($passed) > 0) {
