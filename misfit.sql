@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 01, 2013 at 03:27 PM
+-- Generation Time: Oct 03, 2013 at 04:08 AM
 -- Server version: 5.5.24-log
 -- PHP Version: 5.3.13
 
@@ -30,7 +30,12 @@ CREATE TABLE IF NOT EXISTS `group_exps` (
   `id_group` int(10) unsigned NOT NULL,
   `id_exp` int(10) unsigned NOT NULL,
   `id_twitter` varchar(100) NOT NULL DEFAULT '',
+  `goal` int(10) unsigned NOT NULL DEFAULT '0',
   `start_date` datetime DEFAULT NULL,
+  `last_updated_date` datetime DEFAULT NULL,
+  `old_score` int(10) unsigned DEFAULT '0',
+  `current_score` int(10) unsigned DEFAULT '0',
+  `day_of_week` tinyint(4) unsigned NOT NULL DEFAULT '1',
   `timezone` tinyint(4) NOT NULL DEFAULT '-7',
   UNIQUE KEY `id_group` (`id_group`,`id_exp`,`id_twitter`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
