@@ -52,9 +52,12 @@ class MisfitExpChecker2 extends MisitExpCheckerAbstract {
 	public function checkMorningEvent($exp, $users) {
 		$leaderboard_db = new MisfitLeaderboard();
 		$leaderboard = $leaderboard_db->getYesterdayLeaderboard($exp);
-			
-		foreach ($leaderboard as $i => $user) {
-			if ($user['points'] == 0) break;
+
+		$last_position = min(8, sizeof($leaderboard)); // not counting users having rank > 8
+		for ($i=$last_position - 1; $i>=0; $i--) {
+			$user = $leaderboard[$i];
+			if ($user['points'] == 0)
+				continue; // not counting users having 0 points
 			
 			$message = MisfitMessage::summary2($i+1, $user, $exp['id_twitter']);
 			$this->_twitter->send($message);
