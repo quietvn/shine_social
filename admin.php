@@ -10,27 +10,39 @@ $action = isset($_GET['action']) ? $_GET['action'] : '';
 $f_id_group = isset($_GET['f_id_group']) ? $_GET['f_id_group'] : 0;
 
 $users_db = new MisfitUsers();
+$flash = array();
 if (!empty($_POST) && !empty($_POST['email'])) {
-	$users_db->addNewUser($_POST);
+	$result = $users_db->addNewUser($_POST);
+	$flash = @$result['flash'];
 }
 
 if ($action == 'delete') {
 	$users_db->delete($_GET['id']);
 }
 
-$users = $users_db->getAllByScore($f_id_group);
+$users = $users_db->getAllByScore();
+
+if (!empty($flash)):
 ?>
+<div style='color: red'>
+	<ul>
+	<?php foreach ($flash as $message):?>
+		<li><?php echo $message;?></li>
+	<?php endforeach;?>
+	</ul>
+</div>
+<?php endif;?>
 
 <h3>Add new Shine user:</h3>
 <form method="post">
 	<div style="width: 150px;float: left">Server: </div>
-	<select name="id_server">
+	<select id="id_server" name="id_server">
 		<option value="1">Production</option>
 		<option value="2">Staging</option>
 	</select><br>
-	<div style="width: 150px;float: left">Email: </div><input type="text" name="email" /><br>
-	<div style="width: 150px;float: left">Twitter handle: </div><input type="text" name="id_twitter" /><br>
-	<div style="width: 150px;float: left">Group(s): </div><input type="text" name="groups" /> 
+	<div style="width: 150px;float: left">Email: </div><input type="text" name="email" id="email" /><br>
+	<div style="width: 150px;float: left">Twitter handle: </div><input type="text" name="id_twitter" id="id_twitter" /><br>
+	<div style="width: 150px;float: left">Group(s): </div><input type="text" name="groups" id="groups" /> 
 		Comma separated value. Example: 1,2,3 OR 2<br>
 	<input type="submit">
 </form>
@@ -56,7 +68,10 @@ Show users in Group:
     <th>Last sync</th>
     <th>Options</th>
   </tr>
-  <?php $i=0;foreach ($users as $user):$i++;?>
+  <?php $i=0;foreach ($users as $user):
+  		$groups = explode(",",$user['groups']);
+  		if (!empty($f_id_group) && !in_array($f_id_group, $groups)) continue;
+  		$i++;?>
 	  <tr>
 	    <td><?php echo $i;?></td>
 	    <td><?php echo $MONGO_CONFIG[ $user['id_server'] ]['name'];?></td>
@@ -66,12 +81,24 @@ Show users in Group:
 	    <td align="right"><?php echo round($user['old_score']/2.5);?></td>
 	    <td align="right"><?php echo round($user['current_score']/2.5);?></td>
 	    <td align="right"><?php echo $user['last_updated'];?></td>
-	    <td><a href="#" onclick="deleteUser(<?php echo $user['id']?>, '<?php echo $user['email']?>')">Delete</a></td>
+	    <td>
+	    	<a href="#" onclick="editUser(<?php echo $user['id_server']?>, '<?php echo $user['email']?>', '<?php echo $user['id_twitter']?>', '<?php echo $user['groups']?>')">Edit</a> | 
+	    	<a href="#" onclick="deleteUser(<?php echo $user['id']?>, '<?php echo $user['email']?>')">Delete</a>
+	    </td>
 	  </tr>
   <?php endforeach;?>
 </table>
 
 <script language='javascript'>
+	function editUser(id_server, email, id_twitter, groups) {
+		document.getElementById('id_server').value=id_server;
+		document.getElementById('email').value=email;
+		document.getElementById('id_twitter').value=id_twitter;
+		document.getElementById('groups').value=groups;
+
+		document.getElementById('groups').focus();
+	}
+
 	function deleteUser(id, email) {
 		var answer = confirm('Are you sure you want to delete user ' + email + '?');
 		if (answer == true) {

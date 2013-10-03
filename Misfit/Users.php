@@ -11,7 +11,7 @@ class MisfitUsers {
 		return $this->_db->fetchAll('SELECT * FROM users');
 	}
 	
-	public function getAllByScore($id_group) {
+	public function getAllByScore($id_group = '') {
 		$where = '';
 		if (!empty($id_group))
 			$where = "WHERE id_group=$id_group";
@@ -81,36 +81,47 @@ class MisfitUsers {
 	}
 	
 	public function addNewUser($data) {
-		$existingUser = $this->findOne($data);
+		$result = array();
 		
+		if (empty($data['id_twitter'])) {
+			$result['flash'][] = "Twitter handle cannot be empty!";
+			return $result;
+		}
+		
+		$existingUser = $this->findOne($data);		
 		if (!empty($existingUser)) {
-			//echo "Cannot add the same user in the same server!";
+			$this->_db->query("UPDATE users SET id_twitter = '{$data['id_twitter']}' WHERE id={$existingUser['id']}");
 			$this->addNewUserGroups($existingUser['id'], $data['groups']);
+			$result['flash'][] = "Updated info for user {$data['email']}!";
 		} else {
 			$mongo = MisfitMongo::getInstance($data['id_server'])->collection;
 			$shine_user = $mongo->users->findOne(array('email' => $data['email']));
 			if (!empty($shine_user)) {
 				$query = "INSERT INTO users(id_server,id_shine,email,id_twitter)
-					VALUES ('".$data['id_server']."','".$shine_user['_id']->{'$id'}."', '".$data['email']."', '".$data['id_twitter']."')";
+					VALUES ('".$data['id_server']."','".$shine_user['_id']->{'$id'}."', '".$data['email']."', '".$data['id_twitter']."')
+					ON DUPLICATE KEY
+						UPDATE users SET id_twitter = '".$data['id_twitter']."'";
 				$this->_db->query($query);
 				$id_user = $this->_db->getInsertedId();
-				$this->addNewUserGroups($id_user, $data['groups']);					
+				$this->addNewUserGroups($id_user, $data['groups']);			
+				$result['flash'][] = "Inserted new user having email {$data['email']}!";
 			} else {
-				echo "Cannot find Shine user!";
+				$result['flash'][] = "Cannot find Shine user!";
 			}
 		}
+		
+		return $result;
 	}
 	
 	public function addNewUserGroups($id_user, $groups) {
-		if (empty($groups)) {
-			$id_groups = array(1);
-		} else {
-			$id_groups = explode(',', $groups);
-		}
+		$this->_db->query("DELETE FROM group_users WHERE id_user=$id_user");
+		$id_groups = !empty($groups) ? explode(',', $groups) : array();		
 		
-		foreach ($id_groups as $id_group) {
-			$this->_db->query("INSERT INTO group_users (id_user, id_group)
-				VALUES ($id_user, $id_group)");
+		if (!empty($id_groups)) {
+			foreach ($id_groups as $id_group) {
+				$this->_db->query("INSERT INTO group_users (id_user, id_group)
+					VALUES ($id_user, $id_group)");
+			}
 		}
 	}
 	
