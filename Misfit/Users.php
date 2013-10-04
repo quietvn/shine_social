@@ -98,9 +98,7 @@ class MisfitUsers {
 			$shine_user = $mongo->users->findOne(array('email' => $data['email']));
 			if (!empty($shine_user)) {
 				$query = "INSERT INTO users(id_server,id_shine,email,id_twitter)
-					VALUES ('".$data['id_server']."','".$shine_user['_id']->{'$id'}."', '".$data['email']."', '".$data['id_twitter']."')
-					ON DUPLICATE KEY
-						UPDATE users SET id_twitter = '".$data['id_twitter']."'";
+					VALUES ('".$data['id_server']."','".$shine_user['_id']->{'$id'}."', '".$data['email']."', '".$data['id_twitter']."')";
 				$this->_db->query($query);
 				$id_user = $this->_db->getInsertedId();
 				$this->addNewUserGroups($id_user, $data['groups']);			
