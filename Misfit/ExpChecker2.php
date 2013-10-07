@@ -2,6 +2,11 @@
 include_once ('ExpCheckerAbstract.php');
 class MisfitExpChecker2 extends MisitExpCheckerAbstract {
 	public function checkEvent($exp, $users) {
+		$today = strtotime(date('Y-m-d'));
+		$last_week = $today - 7*24*3600;
+		$user_db = new MisfitUsers();
+		$total_scores = $user_db->getTotalScoreSince($exp, $users, date('Y-m-d', $last_week));
+		
 		for ($i=0; ($i+1)<sizeof($users); $i++) {
 			$user = $users[$i];
 			if ($user['current_score'] > $user['old_score'] // if new score is updated
