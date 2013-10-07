@@ -79,7 +79,7 @@ class MisfitMessage {
 	}
 	
 	static public function AmetGoal($a) {
-		return "Team challenge completed!  Made it all the way across California.  #shine #likeaboss";
+		return "Team challenge completed! Made it all the way across California.  #shine #likeaboss";
 	}
 	
 	static public function wrapUp($exp, $total_percent, $highest, $weakest) {
@@ -100,6 +100,6 @@ class MisfitMessage {
 	}
 	
 	static public function dailyMVP($highest_user, $weakest_user) {
-		return "Way to go @{$highest_user['id_twitter']}, you were yesterday's point leader with 450 points. @{$weakest_user['id_twitter']} can you beat that?";
+		return "Way to go @{$highest_user['id_twitter']}, you were yesterday's point leader with {$highest_user['points']} points. @{$weakest_user['id_twitter']} can you beat that?";
 	}
 }
