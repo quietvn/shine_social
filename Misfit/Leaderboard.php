@@ -50,7 +50,7 @@ class MisfitLeaderboard extends MisfitDbModelAbstract {
 				AND group_exps.id_group = leaderboard.id_group
 			WHERE last_date >= '$last_week'
 			$where
-			ORDER BY points DESC
+			ORDER BY id_group, users.id, points DESC
 		";
 		$users = $this->fetchAll($query);
 		
