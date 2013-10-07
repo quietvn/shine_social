@@ -21,7 +21,10 @@ if ($action == 'delete') {
 }
 
 $users = $users_db->getAllByScore();
-
+?>
+<b>USERS</b> |
+<a href="leaderboard.php">LEADERBOARD</a><hr>
+<?php 
 if (!empty($flash)):
 ?>
 <div style='color: red'>

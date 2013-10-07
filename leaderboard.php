@@ -20,14 +20,15 @@ $boards = $boards_db->getLeaderboard2($f_id_exp, $f_id_group);
 $today = strtotime(date('Y-m-d'));
 $last_week = $today - 7*24*3600;
 ?>
-
+<a href="admin.php">USERS</a> |
+<b>LEADERBOARD</b><hr>
 Experiment: 
 <select id="f_id_exp" name="f_id_exp" onchange="window.location='?f_id_exp=' + this.value;">
 	<option value="2">2</option>
 	<option value="3">3</option>
 </select>
 
-Group: 
+&nbsp; Group: 
 <select id="f_id_group" name="f_id_group" onchange="window.location='?f_id_exp=<?php echo $f_id_exp?>&f_id_group=' + this.value;">
 	<option value="0">-all-</option>
 	<?php foreach ($groups as $group):?>
@@ -35,7 +36,6 @@ Group:
 	<?php endforeach;?>
 </select>
 
-<br><br>
 <?php foreach ($boards as $id_group => $users):?>
 <h3>Group <?php echo $id_group;?></h3>
 
