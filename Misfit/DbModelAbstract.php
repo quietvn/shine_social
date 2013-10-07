@@ -1,7 +1,7 @@
 <?php
 include_once 'Db/Manager.php';
 class MisfitDbModelAbstract {
-	private $_db;
+	protected $_db;
 	
 	public function __construct() {
 		$this->_db = DbManager::getInstance();
