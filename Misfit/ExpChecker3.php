@@ -36,7 +36,7 @@ class MisfitExpChecker3 extends MisitExpCheckerAbstract {
 				// Rule #6: if a member syncs and causes the combined points total to be >=100% of the goal
 				if ($total_percent_floor >= 10 && $total_old_percent_floor < 10) { // don't send tweet again when it reach 110%, 120% ..					
 					$this->_twitter->send(MisfitMessage::AmetGoal($synced_user));
-				} else { 
+				} elseif ($total_percent_floor < 10) { 
 				//Rule #2: if a member syncs and pushes the combined points total above 10%, 20%, 30%..
 					$remaining_score = $goal - $exp['current_score'];
 					$this->_twitter->send(MisfitMessage::ApassedProgress($synced_user, $total_percent_floor, $remaining_score, $goal));
