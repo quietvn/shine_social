@@ -38,6 +38,13 @@ Group:
 <br><br>
 <?php foreach ($boards as $id_group => $users):?>
 <h3>Group <?php echo $id_group;?></h3>
+
+<?php if ($f_id_exp == 3): $first_user = array_slice($users, 0 , 1);?>
+	
+    Start date: <?php echo $first_user[0]['start_date'];?><br>
+    Goal: <?php echo number_format($first_user[0]['goal']);?><br><br>
+<?php endif;?>
+    			
 <table cellpadding="5px" cellspacing=0 border="1px;solid">
   <tr>
     <th>#</th>
@@ -57,10 +64,10 @@ Group:
 	    	$date_string = date('Y-m-d', $date) . " 00:00:00";
 	    ?>
 	    	
-    		<td>
-    			<?php echo isset($user['daily_points'][$date_string]) ? $user['daily_points'][$date_string] : 'n/a';?>
+    		<td align="right">
+    			<?php echo isset($user['daily_points'][$date_string]) ? number_format($user['daily_points'][$date_string]) : 'n/a';?><br>
     			<?php if ($f_id_exp == 3):?>
-    				<br><span style='color:green'><?php echo isset($user['weekly_points'][$date_string]) ? $user['weekly_points'][$date_string] : 'n/a'?></span> 
+    				<span style='color:green'><?php echo isset($user['weekly_points'][$date_string]) ? number_format($user['weekly_points'][$date_string]) : 'n/a'?></span> 
     			<?php endif;?>
     		</td>
     	<?php endfor;?>

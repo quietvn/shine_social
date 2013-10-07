@@ -56,6 +56,8 @@ class MisfitLeaderboard extends MisfitDbModelAbstract {
 		
 		$result = array();
 		foreach ($users as $user) {
+			$result[ $user['id_group'] ] [ $user['id_user'] ] ['start_date'] = $user['start_date'];
+			$result[ $user['id_group'] ] [ $user['id_user'] ] ['goal'] = $user['goal'];
 			$result[ $user['id_group'] ] [ $user['id_user'] ] ['id_group'] = $user['id_group'];
 			$result[ $user['id_group'] ] [ $user['id_user'] ] ['id_twitter'] = $user['id_twitter'];
 			$result[ $user['id_group'] ] [ $user['id_user'] ] ['email'] = $user['email'];
