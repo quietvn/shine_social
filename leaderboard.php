@@ -18,7 +18,7 @@ $boards_db = new MisfitLeaderboard();
 $boards = $boards_db->getLeaderboard2($f_id_exp, $f_id_group);
 
 $today = strtotime(date('Y-m-d'));
-$last_week = $today - 6*24*3600;
+$last_week = $today - 7*24*3600;
 ?>
 
 Experiment: 
