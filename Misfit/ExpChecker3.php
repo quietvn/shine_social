@@ -95,7 +95,7 @@ class MisfitExpChecker3 extends MisitExpCheckerAbstract {
 		Logger::log("Group has passed " .$passed_days. " days ".$passed_hours." hours");			
 		Logger::log("Group expected weekly points: " . $expected_points);
 		
-		if ($passed_days > 0) {
+		if ($passed_days > 0 && $passed_day < 7) {
 			$summary = $this->getSummaryPoints($leaderboard);
 			
 			$total_weekly_points = $summary['total_weekly_points'];
