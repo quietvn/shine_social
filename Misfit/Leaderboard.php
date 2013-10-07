@@ -29,7 +29,7 @@ class MisfitLeaderboard extends MisfitDbModelAbstract {
 				WHERE last_date = '$yesterday'
 					AND id_exp = {$exp['id_exp']}
 					AND id_group = {$exp['id_group']}
-				ORDER BY points DESC
+				ORDER BY id_group, points DESC
 			";
 		
 		return $this->fetchAll($query);

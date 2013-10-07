@@ -34,7 +34,7 @@ class MisfitExps extends MisfitDbModelAbstract {
 	public function getGroups($id_exp = 0) {
 		$where = '';
 		if ($id_exp) $where = " WHERE id_exp = $id_exp";
-		echo $query = "
+		$query = "
 			SELECT DISTINCT id_group
 			FROM group_exps
 			$where
