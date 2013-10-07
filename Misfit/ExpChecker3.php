@@ -35,11 +35,11 @@ class MisfitExpChecker3 extends MisitExpCheckerAbstract {
 			if ($total_percent_floor > $total_old_percent_floor) {
 				// Rule #6: if a member syncs and causes the combined points total to be >=100% of the goal
 				if ($total_percent_floor >= 10 && $total_old_percent_floor < 10) { // don't send tweet again when it reach 110%, 120% ..					
-					$this->_twitter->send(MisfitMessage::AmetGoal($synced_user));
+					Logger::log(MisfitMessage::AmetGoal($synced_user));
 				} else { 
 				//Rule #2: if a member syncs and pushes the combined points total above 10%, 20%, 30%..
 					$remaining_score = $goal - $exp['current_score'];
-					$this->_twitter->send(MisfitMessage::ApassedProgress($synced_user, $total_percent_floor, $remaining_score, $goal));
+					Logger::log(MisfitMessage::ApassedProgress($synced_user, $total_percent_floor, $remaining_score, $goal));
 				}
 			}
 		}
@@ -51,13 +51,13 @@ class MisfitExpChecker3 extends MisitExpCheckerAbstract {
 		Logger::log("Group has passed " .floor($diff/3600/24). " days ".round(($diff/3600) % 24)." hours");
 		// Rule #5: This tweet should occur exactly 7 days after the start of the week.
 		if ($diff >= 7*24*3600) {
-			$this->_twitter->send(MisfitMessage::wrapUp($exp, $total_percent, $total_scores['highest_user'], $total_scores['weakest_user']));
+			Logger::log(MisfitMessage::wrapUp($exp, $total_percent, $total_scores['highest_user'], $total_scores['weakest_user']));
 			
 			$exp_db = new MisfitExps();
 			$exp_db->resetGroupGoal($exp);
 			
 		// Rule #1: Week initiation tweet.  Should be at Monday 9AM PST.
-			$this->_twitter->send(MisfitMessage::initGroup($exp));
+			Logger::log(MisfitMessage::initGroup($exp));
 		}
 		
 		$leaderboard_db = new MisfitLeaderboard();
@@ -111,16 +111,16 @@ class MisfitExpChecker3 extends MisitExpCheckerAbstract {
 				$expected_percentage = round(100*($remaining_daily_points - $total_yesterday_points) / $total_yesterday_points);
 				
 				$message = MisfitMessage::dailyBehindGoal($expected_percentage);
-				$this->_twitter->send($message);
+				Logger::log($message);
 			}
 			// Rule #3a Yesterday team did meet goal
 			else {				
 				$message = MisfitMessage::dailyMetGoal();
-				$this->_twitter->send($message);
+				Logger::log($message);
 			}
 			
 			// Rule #4: Daily MVP: mention best and weakest contributors
-			$this->_twitter->send(MisfitMessage::dailyMVP($summary['highest_user'], $summary['weakest_user']));
+			Logger::log(MisfitMessage::dailyMVP($summary['highest_user'], $summary['weakest_user']));
 		}
 	}
 	
