@@ -37,7 +37,7 @@ Group:
 
 <br><br>
 <?php foreach ($boards as $id_group => $users):?>
-<h3>Group: <?php echo $id_group;?></h3>
+<h3>Group <?php echo $id_group;?></h3>
 <table cellpadding="5px" cellspacing=0 border="1px;solid">
   <tr>
     <th>#</th>
@@ -57,7 +57,12 @@ Group:
 	    	$date_string = date('Y-m-d', $date) . " 00:00:00";
 	    ?>
 	    	
-    		<td><?php echo isset($user['daily_points'][$date_string]) ? $user['daily_points'][$date_string] : 'n/a';?></td>
+    		<td>
+    			<?php echo isset($user['daily_points'][$date_string]) ? $user['daily_points'][$date_string] : 'n/a';?>
+    			<?php if ($f_id_exp == 3):?>
+    				<br><span style='color:green'><?php echo isset($user['weekly_points'][$date_string]) ? $user['weekly_points'][$date_string] : 'n/a'?></span> 
+    			<?php endif;?>
+    		</td>
     	<?php endfor;?>
 	  </tr>
   <?php endforeach;?>
