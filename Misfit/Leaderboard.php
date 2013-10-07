@@ -48,7 +48,6 @@ class MisfitLeaderboard extends MisfitDbModelAbstract {
 			INNER JOIN group_exps
 				ON group_exps.id_exp = leaderboard.id_exp
 				AND group_exps.id_group = leaderboard.id_group
-				AND group_exps.id_exp = 2
 			WHERE last_date >= '$last_week'
 			$where
 			ORDER BY points DESC
