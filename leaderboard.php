@@ -36,7 +36,9 @@ Experiment:
 	<?php endforeach;?>
 </select>
 
-<?php foreach ($boards as $id_group => $users):?>
+<?php foreach ($boards as $id_group => $users):
+$weekly_total = array();
+?>
 <h3>Group <?php echo $id_group;?></h3>
 
 <?php if ($f_id_exp == 3): $first_user = array_slice($users, 0 , 1);?>
@@ -66,13 +68,32 @@ Experiment:
 	    	
     		<td align="right">
     			<?php echo isset($user['daily_points'][$date_string]) ? number_format($user['daily_points'][$date_string]) : 'n/a';?><br>
-    			<?php if ($f_id_exp == 3):?>
+    			<?php if ($f_id_exp == 3):
+    				$weekly_total[$date_string] = 0 + $weekly_total[$date_string] + $user['weekly_points'][$date_string];
+    			?>
     				<span style='color:green'><?php echo isset($user['weekly_points'][$date_string]) ? number_format($user['weekly_points'][$date_string]) : 'n/a'?></span> 
     			<?php endif;?>
     		</td>
     	<?php endfor;?>
 	  </tr>
   <?php endforeach;?>
+  
+  <?php if ($f_id_exp == 3):?>
+  		<tr>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <?php for ($date = $last_week; $date<=$today; $date+=24*3600):
+	    	$date_string = date('Y-m-d', $date) . " 00:00:00";
+	    ?>	    	
+    		<td align="right">
+    			<span style='color:green'><?php echo isset($weekly_total[$date_string]) ? number_format($weekly_total[$date_string]) : 'n/a'?></span><br> 
+    			<span style='color:red'><?php echo isset($weekly_total[$date_string]) ? round(100*$weekly_total[$date_string]/$first_user[0]['goal']) . "%" : 'n/a'?></span>
+    		</td>
+    	<?php endfor;?>
+	  </tr>		
+  <?php endif;?>
+  
 </table>
 <br>
 <?php endforeach;?>
