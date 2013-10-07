@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.1
+-- version 4.0.6
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Oct 03, 2013 at 04:08 AM
--- Server version: 5.5.24-log
--- PHP Version: 5.3.13
+-- Host: 0.0.0.0:3306
+-- Generation Time: Oct 06, 2013 at 04:34 PM
+-- Server version: 5.5.33
+-- PHP Version: 5.5.3
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
@@ -50,6 +50,22 @@ CREATE TABLE IF NOT EXISTS `group_users` (
   `id_group` int(10) unsigned NOT NULL,
   `id_user` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id_group`,`id_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `leaderboard`
+--
+
+CREATE TABLE IF NOT EXISTS `leaderboard` (
+  `id_group` int(10) unsigned NOT NULL,
+  `id_exp` int(10) unsigned NOT NULL,
+  `id_user` int(10) unsigned NOT NULL,
+  `last_date` datetime NOT NULL,
+  `points` int(10) unsigned NOT NULL,
+  `weekly_points` int(10) unsigned DEFAULT '0',
+  PRIMARY KEY (`id_group`,`id_exp`,`id_user`,`last_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

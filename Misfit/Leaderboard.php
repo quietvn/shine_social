@@ -34,4 +34,34 @@ class MisfitLeaderboard extends MisfitDbModelAbstract {
 		
 		return $this->fetchAll($query);
 	}
+	
+	public function getLeaderboard2($id_exp, $id_group = 0) {
+		$where = '';
+		if ($id_exp) $where .= " AND leaderboard.id_exp = $id_exp";
+		if ($id_group) $where .= " AND leaderboard.id_group = $id_group";
+		
+		$last_week = date("Y-m-d", time() - 7*24*3600);
+		$query = "
+			SELECT * FROM leaderboard
+			INNER JOIN users 
+				ON users.id = leaderboard.id_user
+			INNER JOIN group_exps
+				ON group_exps.id_exp = leaderboard.id_exp
+				AND group_exps.id_group = leaderboard.id_group
+				AND group_exps.id_exp = 2
+			WHERE last_date >= '$last_week'
+			$where
+			ORDER BY points DESC
+		";
+		$users = $this->fetchAll($query);
+		
+		$result = array();
+		foreach ($users as $user) {
+			$result[ $user['id_group'] ] [ $user['id_user'] ] ['id_group'] = $user['id_group'];
+			$result[ $user['id_group'] ] [ $user['id_user'] ] ['id_twitter'] = $user['id_twitter'];
+			$result[ $user['id_group'] ] [ $user['id_user'] ] ['email'] = $user['email'];
+			$result[ $user['id_group'] ] [ $user['id_user'] ] ['daily_points'] [$user['last_date']] = $user['points'];
+		}
+		return $result;
+ 	}
 }

@@ -1,12 +1,7 @@
 <?php
-include_once 'Db/Manager.php';
-class MisfitExps {
-	private $_db;
-	
-	public function __construct() {
-		$this->_db = DbManager::getInstance();
-	}
-	
+include_once 'Misfit/DbModelAbstract.php';
+
+class MisfitExps extends MisfitDbModelAbstract {
 	public function getAll() {
 		return $this->_db->fetchAll('SELECT * FROM group_exps');
 	}
@@ -34,5 +29,17 @@ class MisfitExps {
 					start_date = DATE_ADD(start_date, INTERVAL 7 DAY)
 				WHERE id_exp = '{$exp['id_exp']}'
 				AND id_group = '{$exp['id_group']}'");
+	}
+	
+	public function getGroups($id_exp = 0) {
+		$where = '';
+		if ($id_exp) $where = " WHERE id_exp = $id_exp";
+		echo $query = "
+			SELECT DISTINCT id_group
+			FROM group_exps
+			$where
+		";
+			
+		return $this->fetchAll($query);
 	}
 }
