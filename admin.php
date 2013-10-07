@@ -72,8 +72,7 @@ Show users in Group:
     <th>Email</th>
     <th>Twitter</th>
     <th>Groups</th>
-    <th>Old score</th>
-    <th>Latest score</th>
+    <th>Points at last sync</th>
     <th>Last sync</th>
     <th>Options</th>
   </tr>
@@ -87,7 +86,6 @@ Show users in Group:
 	    <td><?php echo $user['email'];?></td>
 	    <td><?php echo $user['id_twitter'];?></td>
 	    <td><?php echo $user['groups'];?></td>
-	    <td align="right"><?php echo round($user['old_score']/2.5);?></td>
 	    <td align="right"><?php echo round($user['current_score']/2.5);?></td>
 	    <td align="right"><?php echo $user['last_updated'];?></td>
 	    <td>
