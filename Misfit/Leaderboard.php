@@ -42,7 +42,7 @@ class MisfitLeaderboard extends MisfitDbModelAbstract {
 		
 		$last_week = date("Y-m-d", time() - 7*24*3600);
 		$query = "
-			SELECT * FROM leaderboard
+			SELECT *, user.id_twitter as user_twitter FROM leaderboard
 			INNER JOIN users 
 				ON users.id = leaderboard.id_user
 			INNER JOIN group_exps
@@ -59,7 +59,7 @@ class MisfitLeaderboard extends MisfitDbModelAbstract {
 			$result[ $user['id_group'] ] [ $user['id_user'] ] ['start_date'] = $user['start_date'];
 			$result[ $user['id_group'] ] [ $user['id_user'] ] ['goal'] = $user['goal'];
 			$result[ $user['id_group'] ] [ $user['id_user'] ] ['id_group'] = $user['id_group'];
-			$result[ $user['id_group'] ] [ $user['id_user'] ] ['id_twitter'] = $user['id_twitter'];
+			$result[ $user['id_group'] ] [ $user['id_user'] ] ['id_twitter'] = $user['user_twitter'];
 			$result[ $user['id_group'] ] [ $user['id_user'] ] ['email'] = $user['email'];
 			$result[ $user['id_group'] ] [ $user['id_user'] ] ['daily_points'] [$user['last_date']] = $user['points'];
 			$result[ $user['id_group'] ] [ $user['id_user'] ] ['weekly_points'] [$user['last_date']] = $user['weekly_points'];
