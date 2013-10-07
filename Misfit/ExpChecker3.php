@@ -4,7 +4,7 @@ class MisfitExpChecker3 extends MisitExpCheckerAbstract {
 	public function checkEvent($exp, $users) {
 		$user_db = new MisfitUsers();
 		$total_scores = $user_db->getTotalScoreSince($exp, $users, $exp['start_date']);
-		
+
 		$exp_db = new MisfitExps();
 		$exp_db->updateGroupScore($exp, $total_scores['total']);
 		
@@ -95,7 +95,7 @@ class MisfitExpChecker3 extends MisitExpCheckerAbstract {
 		Logger::log("Group has passed " .$passed_days. " days ".$passed_hours." hours");			
 		Logger::log("Group expected weekly points: " . $expected_points);
 		
-		if ($passed_days > 0 && $passed_day < 7) {
+		if ($passed_days > 0 && $passed_days < 7) {
 			$summary = $this->getSummaryPoints($leaderboard);
 			
 			$total_weekly_points = $summary['total_weekly_points'];

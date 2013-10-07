@@ -60,7 +60,7 @@ class MisfitMessage {
 	/////////////////////////////
 	static public function ApassedProgress($a, $progress, $remaining, $goal) {
 		$tag = self::getProgressTag($progress);
-		return "@{$a['id_twitter']} just helped push the team's progress past {$progress}0%. Only {$remaining} points away from your goal of {$goal}. {$tag}";
+		return "@{$a['id_twitter']} just helped push the team's progress past {$progress}0%. Only ".self::getPoints($remaining)." away from your goal of ".number_format($goal).". {$tag}";
 	}
 	
 	static public function getProgressTag($progress) {
@@ -83,12 +83,12 @@ class MisfitMessage {
 	}
 	
 	static public function wrapUp($exp, $total_percent, $highest, $weakest) {
-		return "Team Challenge Summary: {$exp['current_score']} points achieved {$total_percent}% of goal. Top contributor: @{$highest['id_twitter']}. Weakest Link: @{$weakest['id_twitter']}";
+		return "Team Challenge Summary: ".self::getPoints($exp['current_score'])." achieved ".self::getPercentage($total_percent)." of goal. Top contributor: @{$highest['id_twitter']}. Weakest link: @{$weakest['id_twitter']}";
 	}
 	
 	static public function initGroup($exp) {
 		$steps = 4*$exp['goal'];
-		return "This week's challenge is to walk across California together ({$exp['goal']} pts or {$steps} steps). Go for it!";
+		return "This week's challenge is to walk across California together (".self::getPoints($exp['goal'])." or ".self::getSteps($steps)."). Go for it!";
 	}
 	
 	static public function dailyMetGoal() {
@@ -96,10 +96,24 @@ class MisfitMessage {
 	}
 	
 	static public function dailyBehindGoal($expected_percentage) {
-		return "Step it up! To complete the challenge, the team will need to be $expected_percentage% more active than yesterday.";
+		return "Step it up! To complete the challenge, the team will need to be ".self::getPercentage($expected_percentage)." more active than yesterday.";
 	}
 	
 	static public function dailyMVP($highest_user, $weakest_user) {
-		return "Way to go @{$highest_user['id_twitter']}, you were yesterday's point leader with {$highest_user['points']} points. @{$weakest_user['id_twitter']} can you beat that?";
+		return "Way to go @{$highest_user['id_twitter']}, you were yesterday's point leader with ".self::getPoints($highest_user['points']).". @{$weakest_user['id_twitter']} can you beat that?";
+	}
+	
+	static public function getPoints($points) {
+		if ($points == 1) return "1 point";
+		else return number_format($points) . " points";
+	}
+	
+	static public function getSteps($steps) {
+		if ($steps == 1) return "1 step";
+		else return number_format($steps) . " steps";
+	}
+	
+	static public function getPercentage($percentage) {
+		return round($percentage) . "%";
 	}
 }
