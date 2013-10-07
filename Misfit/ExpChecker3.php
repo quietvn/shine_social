@@ -3,7 +3,7 @@ include_once ('ExpCheckerAbstract.php');
 class MisfitExpChecker3 extends MisitExpCheckerAbstract {
 	public function checkEvent($exp, $users) {
 		$user_db = new MisfitUsers();
-		$total_scores = $user_db->getTotalScoreSince($users, $exp['start_date']);
+		$total_scores = $user_db->getTotalScoreSince($exp, $users, $exp['start_date']);
 		
 		$exp_db = new MisfitExps();
 		$exp_db->updateGroupScore($exp, $total_scores['total']);

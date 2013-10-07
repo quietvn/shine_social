@@ -1,11 +1,6 @@
 <?php
-include_once 'Db/Manager.php';
-class MisfitUsers {
-	private $_db;
-	
-	public function __construct() {
-		$this->_db = DbManager::getInstance();
-	}
+include_once 'Misfit/DbModelAbstract.php';
+class MisfitUsers extends MisfitDbModelAbstract {
 	
 	public function getAll() {
 		return $this->_db->fetchAll('SELECT * FROM users');
@@ -144,7 +139,7 @@ class MisfitUsers {
 		return $result;
 	}
 	
-	public function getTotalScoreSince($users, $start_time) {
+	public function getTotalScoreSince($exp, $users, $start_time) {
 		$result = array();
 		$total_points = 0;		
 		$user_points = array();
@@ -157,12 +152,13 @@ class MisfitUsers {
 			$query = array( "uid" => $uid,
 					"et" => array('$gt' => strtotime($start_time))
 			);
-			$goals = $mongo->goals->find($query)->sort(array('st' => -1));
+			$goals = $mongo->goals->find($query)->sort(array('st' => 1));
 			$points = 0;
 			while ($goals->hasNext()) {
 				$goal = $goals->getNext();
 				if (!empty($goal['prgd']['points']))
 					$points += round($goal['prgd']['points'] / 2.5);
+				$this->updateLeaderboard($exp, $user, $goal, $points);	
 			}
 			
 			$total_points += $points;
@@ -184,5 +180,21 @@ class MisfitUsers {
 		$result['highest_user'] = $highest_user;
 		$result['weakest_user'] = $weakest_user;
 		return $result;
+	}
+	
+	public function updateLeaderboard($exp, $user, $goal, $weekly_points) {
+		$daily_points = !empty($goal['prgd']['points']) ? round($goal['prgd']['points'] / 2.5) : 0;			
+		$weekly_points = $weekly_points;
+		$date = date('Y-m-d', $goal['et']);
+		
+		Logger::log("User {$user['email']} - $date: daily points = $daily_points, weekly points = $weekly_points");
+		
+		return $this->query("
+			INSERT INTO leaderboard (id_exp, id_group, last_date, id_user, points, weekly_points)
+			VALUES ({$exp['id_exp']}, {$exp['id_group']}, '$date', {$user['id']}, {$daily_points}, {$weekly_points})
+			ON DUPLICATE KEY
+				UPDATE points = {$daily_points},
+					weekly_points = {$weekly_points}
+		");
 	}
 }
