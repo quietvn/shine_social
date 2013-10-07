@@ -157,7 +157,7 @@ class MisfitUsers {
 			$query = array( "uid" => $uid,
 					"et" => array('$gt' => strtotime($start_time))
 			);
-			$goals = $mongo->goals->find($query)->sort(array('st' => -1))->limit(1);
+			$goals = $mongo->goals->find($query)->sort(array('st' => -1));
 			$points = 0;
 			while ($goals->hasNext()) {
 				$goal = $goals->getNext();
