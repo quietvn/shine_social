@@ -197,4 +197,8 @@ class MisfitUsers extends MisfitDbModelAbstract {
 					weekly_points = {$weekly_points}
 		");
 	}
+	
+	public function findOneByTwitter($twitter) {
+		return $this->fetchOne("SELECT * FROM users WHERE id_twitter = '{$twitter}'");	
+	}
 }

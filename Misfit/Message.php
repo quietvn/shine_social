@@ -116,4 +116,41 @@ class MisfitMessage {
 	static public function getPercentage($percentage) {
 		return round($percentage) . "%";
 	}
+	
+	/////////////////////////////
+	// Messages for experiment #4
+	/////////////////////////////
+	static public function initChallenge($c) {
+		return "#shinechallenge{$c['id']}: @{$c['twitter1']} @{$c['twitter2']} the game is on. Get the most points in {$c['duration']} minutes to win. Reply with '#starttimmer {$c['id']}' to begin.";
+	}
+	
+	static public function startUser($c, $i) {
+		return "#shinechallenge{$c['id']}: @{$c["twitter$i"]} started timer at {$c["start$i"]}.";
+	}
+	
+	static public function remindUser1($c, $i) {
+		return "#shinechallenge{$c['id']}: @{$c["twitter$i"]} remember to sync your Shine to complete your turn!";
+	}
+	
+	static public function remindUser2($c, $i) {
+		return "#shinechallenge{$c['id']}: @{$c["twitter$i"]} remember to sync your Shine so you can see who won the challenge!";
+	}
+	
+	static public function remindUserToStart($c, $i, $j) {
+		return "#shinechallenge{$c['id']}: @{$c["twitter$i"]} completed their turn. @{$c["twitter$j"]} now it's your turn. Reply with '#starttimmer {$c['id']}' to begin.";
+	}
+	
+	static public function remindUserToSync($c, $i, $j) {
+		return "#shinechallenge{$c['id']}: @{$c["twitter$i"]} completed their turn. @{$c["twitter$j"]} is still playing, remember to sync to complete your turn.";
+	}
+	
+	static public function announceResult($c) {
+		if ($c['points1'] > $c['points2']) {
+			$i = 1;
+		} else {
+			$i = 2;
+		}
+		$j = 3 - $i;
+		return "#shinechallenge{$c['id']} result: @{$c["twitter$i"]} leads with {$c["points$i"]} points, @{$c["twitter$j"]} has {$c["points$j"]} points.";
+	}
 }

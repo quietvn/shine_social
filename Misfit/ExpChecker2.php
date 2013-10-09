@@ -5,6 +5,8 @@ class MisfitExpChecker2 extends MisitExpCheckerAbstract {
 		$today = strtotime(date('Y-m-d'));
 		$last_week = $today - 7*24*3600;
 		$user_db = new MisfitUsers();
+		
+		//this will update last 7 day goals
 		$total_scores = $user_db->getTotalScoreSince($exp, $users, date('Y-m-d', $last_week));
 		
 		for ($i=0; ($i+1)<sizeof($users); $i++) {

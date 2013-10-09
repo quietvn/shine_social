@@ -8,7 +8,9 @@ include_once 'Misfit/Users.php';
 include_once 'Misfit/Exps.php';
 include_once 'Misfit/ExpChecker2.php';
 include_once 'Misfit/ExpChecker3.php';
+include_once 'Misfit/ExpChecker4.php';
 include_once 'Misfit/Leaderboard.php';
+include_once 'Misfit/Challenges.php';
 
 Logger::log("STARTED");
 
@@ -34,4 +36,5 @@ foreach ($exps as $exp) {
 	$checker = new $classname($id_twitter);
 	$checker->checkEvent($exp, $users[$id_group]);
 }
+
 Logger::log("FINISHED\n");

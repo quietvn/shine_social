@@ -12,10 +12,14 @@ class MisfitDbModelAbstract {
 	}
 	
 	public function fetchOne($sql) {
-		return $this->_db->fetchAll($sql);
+		return $this->_db->fetchOne($sql);
 	}
 	
 	public function query($sql) {
 		return $this->_db->query($sql);
+	}
+	
+	public function getInsertedId() {
+		return $this->_db->getInsertedId();
 	}
 }
