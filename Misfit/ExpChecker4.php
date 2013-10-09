@@ -29,7 +29,7 @@ class MisfitExpChecker4 extends MisitExpCheckerAbstract {
 		$result = null;
 		$challenge_db = new MisfitChallenges();
 		// @a @b #starttimmer $id_challenge
-		if ($tokens[2] == '#starttimmer' && !empty($tokens[3])) {
+		if ($tokens[2] == '#starttimer' && !empty($tokens[3])) {
 			$this_twitter = $reply->user->screen_name;
 			$id_challenge = $tokens[3];
 			$result = $challenge_db->getOneById($id_challenge);

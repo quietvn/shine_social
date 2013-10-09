@@ -16,6 +16,7 @@ $groups = $exps->getExpGroups(4);
 foreach ($groups as $group) {
 	$twitter = MisfitTwitter::getInstance($group['id_twitter']);
 	$replies = $twitter->load(MisfitTwitter::REPLIES);
+	Logger::log("@{$group['id_twitter']}: Got " . sizeof($replies) . ' replied tweets');
 	
 	$checker = new MisfitExpChecker4($group['id_twitter']);
 	$checker->checkTwitterEvent($replies);

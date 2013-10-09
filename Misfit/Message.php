@@ -121,7 +121,7 @@ class MisfitMessage {
 	// Messages for experiment #4
 	/////////////////////////////
 	static public function initChallenge($c) {
-		return "#shinechallenge{$c['id']}: @{$c['twitter1']} @{$c['twitter2']} the game is on. Get the most points in {$c['duration']} minutes to win. Reply with '#starttimmer {$c['id']}' to begin.";
+		return "#shinechallenge{$c['id']}: @{$c['twitter1']} @{$c['twitter2']} the game is on. Get the most points in {$c['duration']} minutes to win. Reply with '#starttimer {$c['id']}' to begin.";
 	}
 	
 	static public function startUser($c, $i) {
@@ -137,7 +137,7 @@ class MisfitMessage {
 	}
 	
 	static public function remindUserToStart($c, $i, $j) {
-		return "#shinechallenge{$c['id']}: @{$c["twitter$i"]} completed their turn. @{$c["twitter$j"]} now it's your turn. Reply with '#starttimmer {$c['id']}' to begin.";
+		return "#shinechallenge{$c['id']}: @{$c["twitter$i"]} completed their turn. @{$c["twitter$j"]} now it's your turn. Reply with '#starttimer {$c['id']}' to begin.";
 	}
 	
 	static public function remindUserToSync($c, $i, $j) {
