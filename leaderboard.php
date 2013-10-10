@@ -21,7 +21,9 @@ $today = strtotime(date('Y-m-d'));
 $last_week = $today - 7*24*3600;
 ?>
 <a href="admin.php">USERS</a> |
-<b>LEADERBOARD</b><hr>
+<b>LEADERBOARD</b> |
+<a href="report.php">REPORT</a>
+<hr>
 Experiment: 
 <select id="f_id_exp" name="f_id_exp" onchange="window.location='?f_id_exp=' + this.value;">
 	<option value="2">2</option>

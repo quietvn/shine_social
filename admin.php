@@ -25,7 +25,9 @@ $users = $users_db->getAllByScore();
 $groups = $users_db->getGroups();
 ?>
 <b>USERS</b> |
-<a href="leaderboard.php">LEADERBOARD</a><hr>
+<a href="leaderboard.php">LEADERBOARD</a> |
+<a href="report.php">REPORT</a>
+<hr>
 <?php 
 if (!empty($flash)):
 ?>

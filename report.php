@@ -18,7 +18,9 @@ $groups = $exps_db->getGroups($f_id_exp);
 $user_db = new MisfitUsers();
 ?>
 <a href="admin.php">USERS</a> |
-<b>LEADERBOARD</b><hr>
+<a href="leaderboard.php">LEADERBOARD</a> |
+<b>REPORT</b>
+<hr>
 Experiment: 
 <select id="f_id_exp" name="f_id_exp" onchange="window.location='?f_id_exp=' + this.value;">
 	<option value="2">2</option>
