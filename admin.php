@@ -2,6 +2,7 @@
 set_include_path(get_include_path() . PATH_SEPARATOR . './libs');
 
 include_once 'configs.php';
+include_once 'Misfit/Exps.php';
 include_once 'Misfit/Users.php';
 include_once 'Misfit/Twitter.php';
 include_once 'Misfit/Mongo.php';
@@ -21,6 +22,7 @@ if ($action == 'delete') {
 }
 
 $users = $users_db->getAllByScore();
+$groups = $users_db->getGroups();
 ?>
 <b>USERS</b> |
 <a href="leaderboard.php">LEADERBOARD</a><hr>
@@ -53,15 +55,9 @@ if (!empty($flash)):
 Show users in Group: 
 <select id="f_id_group" name="f_id_group" onchange="window.location='?f_id_group=' + this.value;">
 	<option value="0">-all-</option>
-	<option value="1">1</option>
-	<option value="2">2</option>
-	<option value="3">3</option>
-	<option value="4">4</option>
-	<option value="5">5</option>
-	<option value="6">6</option>
-	<option value="7">7</option>
-	<option value="8">8</option>
-	<option value="9">9</option>
+	<?php foreach ($groups as $group):?>
+		<option value="<?php echo $group['id_group'];?>"><?php echo $group['id_group'];?></option>
+	<?php endforeach;?>
 </select>
 
 <br><br>

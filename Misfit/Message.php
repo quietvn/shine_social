@@ -121,7 +121,7 @@ class MisfitMessage {
 	// Messages for experiment #4
 	/////////////////////////////
 	static public function initChallenge($c) {
-		return "#shinechallenge{$c['id']}: @{$c['twitter1']} @{$c['twitter2']} the game is on. Get the most points in {$c['duration']} minutes to win. Reply with '#starttimer {$c['id']}' to begin.";
+		return "#shinechallenge{$c['id']}: @{$c['twitter1']} @{$c['twitter2']} the game is on. Reply with '#starttimer {$c['id']}' to begin your {$c['duration']} minutes.";
 	}
 	
 	static public function startUser($c, $i) {

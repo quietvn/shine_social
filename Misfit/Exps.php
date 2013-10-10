@@ -43,13 +43,16 @@ class MisfitExps extends MisfitDbModelAbstract {
 		return $this->fetchAll($query);
 	}
 	
-	public function getExpGroups($id_exp = 0) {
+	public function getExpGroups($id_exp = 0, $id_group = 0) {
 		$where = '';
-		if ($id_exp) $where = " WHERE id_exp = $id_exp";
+		if ($id_exp) $where .= " AND id_exp = $id_exp";
+		if ($id_group) $where .= " AND id_group = $id_group";
 		$query = "
 			SELECT *
 			FROM group_exps
-			$where
+			WHERE 1=1
+				$where
+			ORDER BY id_exp, id_group
 		";
 			
 		return $this->fetchAll($query);

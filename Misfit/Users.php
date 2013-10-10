@@ -1,6 +1,7 @@
 <?php
 include_once 'Misfit/DbModelAbstract.php';
 class MisfitUsers extends MisfitDbModelAbstract {
+	const REPORT_BEFORE_DAYS = 14;
 	
 	public function getAll() {
 		return $this->_db->fetchAll('SELECT * FROM users');
@@ -200,5 +201,97 @@ class MisfitUsers extends MisfitDbModelAbstract {
 	
 	public function findOneByTwitter($twitter) {
 		return $this->fetchOne("SELECT * FROM users WHERE id_twitter = '{$twitter}'");	
+	}
+	
+	public function getGroups() {
+		$query = "
+			SELECT DISTINCT id_group
+			FROM group_users
+		";
+			
+		return $this->fetchAll($query);
+	}
+	
+	public function getAllByIdGroup($id_group) {
+		$sql = "
+			SELECT group_users.id_group, users.* 
+			FROM users
+			INNER JOIN group_users ON users.id = group_users.id_user
+			WHERE id_group = '$id_group'";
+		$users = $this->_db->fetchAll($sql);
+		$result = array();
+		foreach ($users as $user) {
+			$result[ $user['id_shine'] ] = $user;
+		}
+		
+		return $result;
+	}
+	
+	public function getAvgPointsBefore($user, $start, $end) {
+		return $this->getAvgPoints($user, strtotime($start) - self::REPORT_BEFORE_DAYS*24*3600, strtotime($start));
+	}
+	
+	public function getAvgPointsAfter($user, $start, $end) {
+		return $this->getAvgPoints($user, strtotime($start), strtotime($end));
+	}
+	
+	public function getAvgPoints($user, $start, $end) {
+		$mongo = MisfitMongo::getInstance($user['id_server'])->collection;
+		$uid = new MongoId($user['id_shine']);
+		$query = array( 
+					"uid" => $uid,
+					"et" => array(
+						'$gt' => $start,
+						'$lte' => $end + 24*3600
+					)
+				);
+//print_r($query);
+		$goals = $mongo->goals->find($query);
+		$points = 0;
+		$i = 0;
+		while ($goals->hasNext()) {
+			$goal = $goals->getNext();
+			$i++;
+			if (!empty($goal['prgd']['points']))
+				$points += round($goal['prgd']['points'] / 2.5);
+		}
+		
+		return ($i==0)?0:round($points / $i, 2);
+	}
+	
+	public function getAvgSyncBefore($user, $start, $end) {
+		return $this->getAvgSync($user, strtotime($start) - self::REPORT_BEFORE_DAYS*24*3600, strtotime($start) - 24*3600);
+	}
+	
+	public function getAvgSyncAfter($user, $start, $end) {
+		return $this->getAvgSync($user, strtotime($start), strtotime($end));
+	}
+	
+	public function getAvgSync($user, $start, $end) {
+		$duration = 1 + ($end - $start)/(24*3600);
+		$mongo = MisfitMongo::getInstance($user['id_server'])->collection_raw;
+		$uid = new MongoId($user['id_shine']);
+		$query = array( 
+					"uid" => $uid,
+					"et" => array(
+						'$gt' => $start,
+						'$lte' => $end + 24*3600
+					)
+				);
+//print_r($query);
+		$logs = $mongo->logs->find($query);
+		$syncs = array(1=>0, 2=>0, 3=>0);
+		
+		while ($logs->hasNext()) {
+			$log = $logs->getNext();
+			$data = $log['data'];
+			$syncs[1]++;
+		}
+				
+		$result = array();
+		for ($i=1; $i<=3; $i++) {
+			$result[$i] = round($syncs[$i] / $duration, 2);
+		}
+		return $result;
 	}
 }
