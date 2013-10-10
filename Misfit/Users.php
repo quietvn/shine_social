@@ -269,7 +269,7 @@ class MisfitUsers extends MisfitDbModelAbstract {
 	
 	public function getAvgSync($user, $start, $end) {
 		$duration = 1 + ($end - $start)/(24*3600);
-		$mongo = MisfitMongo::getInstance($user['id_server'])->collection_raw;
+		$mongo = MisfitMongo::getInstance($user['id_server'])->collection;
 		$uid = new MongoId($user['id_shine']);
 		$query = array( 
 					"uid" => $uid,
