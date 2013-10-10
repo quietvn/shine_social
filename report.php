@@ -8,7 +8,7 @@ include_once 'Misfit/Twitter.php';
 include_once 'Misfit/Mongo.php';
 include_once 'Misfit/Leaderboard.php';
 
-$f_id_exp = isset($_GET['f_id_exp']) ? $_GET['f_id_exp'] : 0;
+$f_id_exp = isset($_GET['f_id_exp']) ? $_GET['f_id_exp'] : 2;
 $f_id_group = isset($_GET['f_id_group']) ? $_GET['f_id_group'] : 0;
 
 $exps_db = new MisfitExps();
@@ -21,7 +21,6 @@ $user_db = new MisfitUsers();
 <b>LEADERBOARD</b><hr>
 Experiment: 
 <select id="f_id_exp" name="f_id_exp" onchange="window.location='?f_id_exp=' + this.value;">
-	<option value="0">-all-</option>
 	<option value="2">2</option>
 	<option value="3">3</option>
 	<option value="4">4</option>
