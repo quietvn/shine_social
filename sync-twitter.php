@@ -21,6 +21,7 @@ foreach ($groups as $group) {
 	$checker = new MisfitExpChecker4($group['id_twitter']);
 	$checker->checkTwitterEvent($replies);
 	$checker->remindDueUsers();
+	$checker->calculateDelayedPeriodPoints();
 }
 
 Logger::log("FINISHED\n");

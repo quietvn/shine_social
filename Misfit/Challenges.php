@@ -1,6 +1,7 @@
 <?php
 include_once 'Misfit/DbModelAbstract.php';
 class MisfitChallenges extends MisfitDbModelAbstract {
+	const RESCUE_DELAY = 2; // 2 minutes delay for Rescue jobs to be finished
 	
 	public function create($c) {
 		$user_db = new MisfitUsers();
@@ -71,14 +72,13 @@ class MisfitChallenges extends MisfitDbModelAbstract {
 		return $this->fetchOne("SELECT * FROM challenges WHERE id = $id");
 	}
 	
-	public function getPeriodPoints($challenge, $user, $i) {
-		$mongo = MisfitMongo::getInstance($user['id_server'])->collection;
-		$uid = new MongoId($user['id_shine']);
+	public function getPeriodPoints($challenge, $i) {
+		$mongo = MisfitMongo::getInstance($challenge['id_server'])->collection_raw;
+		$uid = new MongoId($challenge['id_shine']);
 		$query = array( "uid" => $uid,
 				"et" => array('$gt' => strtotime($challenge["start$i"]),
 							'$lte' => strtotime($challenge["remind$i"]))
 		);
-				
 		$activities = $mongo->activities->find($query);
 		$points = 0;
 		while ($activities->hasNext()) {
@@ -88,5 +88,26 @@ class MisfitChallenges extends MisfitDbModelAbstract {
 		}
 				
 		return round($points / 2.5);
+	}
+	
+	public function updateSync($challenge, $i) {
+		$query = "
+			UPDATE challenges
+			SET sync$i = '".date("Y-m-d H:i:s")."'
+			WHERE id = {$challenge['id']}
+		";
+		
+		return $this->query($query);
+	}
+	
+	public function getSyncedUsers($i) {
+	 	$query = "
+			SELECT challenges.*, id_shine, id_server, id_twitter FROM challenges
+			INNER JOIN users
+				ON users.id = id_user$i
+			WHERE (TO_SECONDS(NOW()) - TO_SECONDS(sync$i) >= ".self::RESCUE_DELAY."*60 && points$i IS NULL)
+		";
+		
+		return $this->fetchAll($query);
 	}
 }

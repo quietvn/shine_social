@@ -11,7 +11,10 @@ class MisfitMongo {
 			global $MONGO_CONFIG;
 			MongoCursor::$slaveOkay = true;
 			self::$_instances[$server] = new MongoClient($MONGO_CONFIG[$server]['url']);
-			self::$_instances[$server]->collection = self::$_instances[$server]->$MONGO_CONFIG[$server]['collection'];
+			$db_name = $MONGO_CONFIG[$server]['collection'];
+			$db_name_raw = $db_name . "_raw";
+			self::$_instances[$server]->collection = self::$_instances[$server]->$db_name;
+			self::$_instances[$server]->collection_raw = self::$_instances[$server]->$db_name_raw;
 		}
 		return self::$_instances[$server];
 	}

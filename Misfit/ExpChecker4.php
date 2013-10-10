@@ -38,6 +38,8 @@ class MisfitExpChecker4 extends MisitExpCheckerAbstract {
 				$result['i'] = 1;
 			} elseif ($this_twitter == $result['twitter2']) {
 				$result['i'] = 2;
+			} else {
+				return null;
 			}
 			
 			$result["start" . $result['i']] = date('Y-m-d H:i:s', strtotime($reply->created_at)); //convert form UTC to PST		
@@ -99,10 +101,8 @@ class MisfitExpChecker4 extends MisitExpCheckerAbstract {
 						continue; 
 					}
 					
-					$points = $challenge_db->getPeriodPoints($challenge, $user, $i);
-					Logger::log("Challenge {$challenge['id']}: User {$user['id_twitter']} just synced with {$user['current_score']} points, period points = $points");
-					
-					$challenge_db->updatePoints($challenge, $points, $i);
+					Logger::log("Challenge {$challenge['id']}: User {$user['id_twitter']} just synced with {$user['current_score']} points");
+					$challenge_db->updateSync($challenge, $i);
 					$challenge = $challenge_db->getOne($challenge['id']); // get the updated challenge
 					
 					$j = 3 - $i;
@@ -111,11 +111,30 @@ class MisfitExpChecker4 extends MisitExpCheckerAbstract {
 						$this->_twitter->send(MisfitMessage::remindUserToStart($challenge, $i, $j));
 					} elseif ($challenge["points$j"] == null) {
 						$this->_twitter->send(MisfitMessage::remindUserToSync($challenge, $i, $j));
-					} else {
-						$this->_twitter->send(MisfitMessage::announceResult($challenge, $i, $j));
-					}					
+					}				
 				}
 			}
 		}
+	}
+	
+	public function calculateDelayedPeriodPoints() {
+		$challenge_db = new MisfitChallenges();
+		for ($i=1; $i<=2; $i++) {
+			$j = 3 - $i;
+			$challenges = $challenge_db->getSyncedUsers($i);
+			if (empty($challenges)) continue;
+			
+			foreach ($challenges as $challenge) {
+				$points = $challenge_db->getPeriodPoints($challenge, $i);
+				Logger::log("Challenge {$challenge['id']}: User {$challenge['id_twitter']} is updated with {$points} points");
+				
+				$challenge_db->updatePoints($challenge, $points, $i);
+				$challenge = $challenge_db->getOne($challenge['id']); // get the updated challenge
+								
+				if ($challenge["points$j"] != null) {
+					$this->_twitter->send(MisfitMessage::announceResult($challenge, $i, $j));
+				}	
+			}
+		}			
 	}
 }
