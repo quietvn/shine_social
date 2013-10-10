@@ -11,7 +11,7 @@ class MisfitMessage {
 	
 	static public function AcreepedPassedB($a, $b) {
 		$points = round($a['current_score']/2.5) - round($b['current_score']/2.5);
-		return "@{$a['id_twitter']} just creeped past @{$b['id_twitter']} with $points points!";
+		return "@{$a['id_twitter']} just edged past @{$b['id_twitter']} with $points points!";
 	}
 	
 	static public function AbehindB($a, $b) {

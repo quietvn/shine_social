@@ -23,8 +23,8 @@ class MisfitExpChecker2 extends MisitExpCheckerAbstract {
 						$message = MisfitMessage::AfirstB($user, $passed[0]);
 						
 					// rule #2 A passed 3 to 5 B
-					else if (sizeof($passed) >= 3)
-						$message = MisfitMessage::Apassed3B($user, $passed);
+//					else if (sizeof($passed) >= 3)
+//						$message = MisfitMessage::Apassed3B($user, $passed);
 						
 					// rule #3: A neck B
 					else if ($user['current_score'] == $users[$i+1]['current_score'])
