@@ -1,5 +1,7 @@
 <?php
 include_once 'Misfit/DbModelAbstract.php';
+include_once 'Cache.php';
+
 class MisfitUsers extends MisfitDbModelAbstract {
 	const REPORT_BEFORE_DAYS = 14;
 	
@@ -237,6 +239,11 @@ class MisfitUsers extends MisfitDbModelAbstract {
 	}
 	
 	public function getAvgPoints($user, $start, $end) {
+		$cached_key = "points-{$user['id']}-$start-$end";
+		$cached_value = Cache::get($cached_key);
+		if (null != $cached_value)
+			return $cached_value;
+			
 		$mongo = MisfitMongo::getInstance($user['id_server'])->collection;
 		$uid = new MongoId($user['id_shine']);
 		$query = array( 
@@ -257,7 +264,9 @@ class MisfitUsers extends MisfitDbModelAbstract {
 				$points += round($goal['prgd']['points'] / 2.5);
 		}
 		
-		return ($i==0)?0:round($points / $i);
+		$result = ($i==0) ? 0 : round($points / $i);
+		Cache::save($cached_key, $result);
+		return $result;
 	}
 	
 	public function getAvgSyncBefore($user, $start, $end) {
@@ -269,6 +278,11 @@ class MisfitUsers extends MisfitDbModelAbstract {
 	}
 	
 	public function getAvgSync($user, $start, $end) {
+		$cached_key = "sync-{$user['id']}-$start-$end";
+		$cached_value = Cache::get($cached_key);
+		if (null != $cached_value)
+			return $cached_value;
+		
 		$duration = 1 + ($end - $start)/(24*3600);
 		$mongo = MisfitMongo::getInstance($user['id_server'])->collection;
 		$uid = new MongoId($user['id_shine']);
@@ -295,9 +309,12 @@ class MisfitUsers extends MisfitDbModelAbstract {
 		}
 				
 		$result = array();
+		$result[] = 0; 
 		for ($i=1; $i<=3; $i++) {
-			$result[$i] = round($syncs[$i] / $duration, 2);
+			$result[] = round($syncs[$i] / $duration, 2);
 		}
+		
+		Cache::save($cached_key, $result);
 		return $result;
 	}
 }
