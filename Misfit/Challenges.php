@@ -10,14 +10,25 @@ class MisfitChallenges extends MisfitDbModelAbstract {
 		
 		$return = null;
 		if ($user1 && $user2) {
-		
-			$query = "INSERT IGNORE INTO challenges (twitter1, twitter2, id_user1, id_user2, init, duration)
-				VALUES ('{$c['twitter1']}', '{$c['twitter2']}', {$user1['id']}, {$user2['id']}, '{$c['init']}', '{$c['duration']}')";
-			$this->query($query);
-			$return = $this->getInsertedId();
+			$existing = $this->findExisting($user1['id'], $user2['id'], $c['init']);
+			if (!$existing) {
+				$query = "INSERT IGNORE INTO challenges (twitter1, twitter2, id_user1, id_user2, init, duration)
+					VALUES ('{$c['twitter1']}', '{$c['twitter2']}', {$user1['id']}, {$user2['id']}, '{$c['init']}', '{$c['duration']}')";
+				$this->query($query);
+				$return = $this->getInsertedId();
+			} else {
+				Logger::log("Existed challenge {$user1['id']}, {$user2['id']}, {$c['init']}");
+			}
 		}
 		
 		return $return;
+	}
+	
+	public function findExisting($id_user1, $id_user2, $init) {
+		return $this->fetchOne("SELECT * FROM challenges 
+			WHERE id_user1=$id_user1
+				AND id_user2=$id_user2
+				AND init='$init'");
 	}
 	
 	public function getOneById($id) {
