@@ -2,6 +2,7 @@
 set_include_path(get_include_path() . PATH_SEPARATOR . './libs');
 
 include_once 'configs.php';
+include_once 'libs/Logger.php';
 include_once 'Misfit/Exps.php';
 include_once 'Misfit/Users.php';
 include_once 'Misfit/Twitter.php';

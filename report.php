@@ -45,19 +45,20 @@ Experiment:
 <br>
 
 <?php 
+	$end_date = date('Y-m-d', time() - 24*3600);
 	foreach ($exps as $exp):
 		$id_exp = $exp['id_exp'];
 		$id_group = $exp['id_group'];
-		$start_date = $exp['participation_date'];
-		$end_date = !empty($exp['participation_end_date']) ? $exp['participation_end_date'] : date('Y-m-d', time() - 24*3600);
+//		$start_date = $exp['participation_date'];
+//		$end_date = !empty($exp['participation_end_date']) ? $exp['participation_end_date'] : date('Y-m-d', time() - 24*3600);
 ?>
-<h3>Experiment #<?php echo $id_exp;?> - Group #<?php echo $id_group;?> 
-- From <?php echo $start_date;?> to <?php echo $end_date;?></h3>
+<h3>Experiment #<?php echo $id_exp;?> - Group #<?php echo $id_group;?></h3>
 <table cellpadding="5px" cellspacing=0 border="1px;solid">
   	<tr>
 	    <th>#</th>
 	    <th>Email</th>
 	    <th>Twitter</th>
+	    <th>Start date</th>
 	    <th>AVG Points</th>
 	    <th>AVG Manual Sync</th>
 	    <th>AVG FG Sync</th>
@@ -67,15 +68,17 @@ Experiment:
 <?php	$users = $user_db->getAllByIdGroup($exp['id_group']);
 		$i=0;
 		foreach ($users as $user):
-  		$i++;
-  		$points_before = $user_db->getAvgPointsBefore($user, $start_date, $end_date);
-  		$points_after = $user_db->getAvgPointsAfter($user, $start_date, $end_date);
-  		$sync_before = $user_db->getAvgSyncBefore($user, $start_date, $end_date);
-  		$sync_after = $user_db->getAvgSyncAfter($user, $start_date, $end_date);?>
+	  		$i++;
+	  		$start_date = $user['start_date'];
+	  		$points_before = $user_db->getAvgPointsBefore($user, $start_date, $end_date);
+	  		$points_after = $user_db->getAvgPointsAfter($user, $start_date, $end_date);
+	  		$sync_before = $user_db->getAvgSyncBefore($user, $start_date, $end_date);
+	  		$sync_after = $user_db->getAvgSyncAfter($user, $start_date, $end_date);?>
 	<tr>
 	    <td><?php echo $i;?></td>
 	    <td><?php echo $user['email'];?></td>
 	    <td><?php echo $user['id_twitter'];?></td>
+	    <td><?php echo $user['start_date'];?></td>
 	    <td>
 	    	<div style='width:40px;float:left;color:green'><?php echo $points_before?></div>
 	    	|
