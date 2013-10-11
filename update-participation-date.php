@@ -21,7 +21,10 @@ foreach ($users as $user) {
 			SET start_date='{$start_date}'
 			WHERE id = {$user['id']}
 		";
+		Logger::log("Update user {$user['id_twitter']} start date to {$start_date}");
 		$users_db->query($query);
+	} else {
+		Logger::log("Cannot find start date of user {$user['id_twitter']}");
 	}
 }
 
