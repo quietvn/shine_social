@@ -1,6 +1,8 @@
 <?php
 include_once ('ExpCheckerAbstract.php');
 class MisfitExpChecker4 extends MisitExpCheckerAbstract {
+	
+	public static $START_TIMER = array('#starttimer', 's', 'start');
 	public function checkTwitterEvent($replies) {
 		$challenge_db = new MisfitChallenges();
 		
@@ -13,9 +15,9 @@ class MisfitExpChecker4 extends MisitExpCheckerAbstract {
 				}
 			}
 			elseif ($timer = $this->isTimer($reply)) {
-				$challenge_db->updateTimer($timer);
 				$i = $timer['i'];
 				if (time() - strtotime($timer["start$i"]) <= 60) {
+					$challenge_db->updateTimer($timer);
 					$this->_twitter->send(MisfitMessage::startUser($timer, $i));
 				}
 			}
@@ -29,7 +31,7 @@ class MisfitExpChecker4 extends MisitExpCheckerAbstract {
 		$result = null;
 		$challenge_db = new MisfitChallenges();
 		// @a @b #starttimmer $id_challenge
-		if ($tokens[2] == '#starttimer' && !empty($tokens[3])) {
+		if (in_array($tokens[2], self::$START_TIMER) && !empty($tokens[3])) {
 			$this_twitter = $reply->user->screen_name;
 			$id_challenge = $tokens[3];
 			$result = $challenge_db->getOneById($id_challenge);
@@ -86,8 +88,7 @@ class MisfitExpChecker4 extends MisitExpCheckerAbstract {
 	
 	public function checkEvent($exp, $users) {
 		$challenge_db = new MisfitChallenges();
-		for ($k=0; ($k+1)<sizeof($users); $k++) {
-			$user = $users[$k];
+		foreach ($users as $user) {
 			if ($user['current_score'] > $user['old_score']) { // if new score is updated
 				//check if this user has any challenge to be sync
 				$challenge = $challenge_db->getToBeSync($user);
@@ -109,7 +110,7 @@ class MisfitExpChecker4 extends MisitExpCheckerAbstract {
 					
 					if ($challenge["start$j"] == null || $challenge["start$j"] == '0000-00-00 00:00:00') {
 						$this->_twitter->send(MisfitMessage::remindUserToStart($challenge, $i, $j));
-					} elseif ($challenge["points$j"] == null) {
+					} elseif ($challenge["sync$j"] == null) {
 						$this->_twitter->send(MisfitMessage::remindUserToSync($challenge, $i, $j));
 					}				
 				}
@@ -132,7 +133,23 @@ class MisfitExpChecker4 extends MisitExpCheckerAbstract {
 				$challenge = $challenge_db->getOne($challenge['id']); // get the updated challenge
 								
 				if ($challenge["points$j"] != null) {
-					$this->_twitter->send(MisfitMessage::announceResult($challenge, $i, $j));
+					$this->_twitter->send(MisfitMessage::announceResult($challenge));
+					
+					if ($challenge["round"] % 3 == 0) {
+						$result = $challenge_db->getGrandResult($challenge);
+						$this->_twitter->send(MisfitMessage::announceGrandResult($challenge, $result));
+					}
+					
+					$newChallenge = $challenge;
+					$newChallenge['init'] = date("Y-m-d H:i:s");
+					$newChallenge['round'] += 1;
+					$id_challenge = $challenge_db->create($newChallenge);
+					if ($id_challenge) {
+						$newChallenge['id'] = $id_challenge;
+						$this->_twitter->send(MisfitMessage::initChallenge($newChallenge));
+					} else {
+						Logger::log("Cannot create new challenge $newChallenge. Something is terribly wrong here");
+					}				
 				}	
 			}
 		}			

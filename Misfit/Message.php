@@ -151,6 +151,16 @@ class MisfitMessage {
 			$i = 2;
 		}
 		$j = 3 - $i;
-		return "#shinechallenge{$c['id']} result: @{$c["twitter$i"]} leads with {$c["points$i"]} points, @{$c["twitter$j"]} has {$c["points$j"]} points.";
+		return "#shinechallenge{$c['id']} Round {$c['round']} result: @{$c["twitter$i"]} leads with {$c["points$i"]} points, @{$c["twitter$j"]} has {$c["points$j"]} points.";
+	}
+	
+	static public function announceGrandResult($c, $result) {
+		if ($result['total_points1'] > $result['total_points2']) {
+			$i = 1;
+		} else {
+			$i = 2;
+		}
+		$j = 3 - $i;
+		return "#shinechallenge{$c['id']} Game over. The winner is @{$c["twitter$i"]} with {$result["total_points$i"]} total points across 3 rounds. @{$c["twitter$j"]} had {$result["total_points$j"]} points.";
 	}
 }

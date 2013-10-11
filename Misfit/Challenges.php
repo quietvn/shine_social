@@ -4,6 +4,8 @@ class MisfitChallenges extends MisfitDbModelAbstract {
 	const RESCUE_DELAY = 2; // 2 minutes delay for Rescue jobs to be finished
 	
 	public function create($c) {
+		if (empty($c['round']))
+			$c['round'] = 1;
 		$user_db = new MisfitUsers();
 		$user1 = $user_db->findOneByTwitter($c['twitter1']);
 		$user2 = $user_db->findOneByTwitter($c['twitter2']);
@@ -12,8 +14,8 @@ class MisfitChallenges extends MisfitDbModelAbstract {
 		if ($user1 && $user2) {
 			$existing = $this->findExisting($user1['id'], $user2['id'], $c['init']);
 			if (!$existing) {
-				$query = "INSERT IGNORE INTO challenges (twitter1, twitter2, id_user1, id_user2, init, duration)
-					VALUES ('{$c['twitter1']}', '{$c['twitter2']}', {$user1['id']}, {$user2['id']}, '{$c['init']}', '{$c['duration']}')";
+				$query = "INSERT IGNORE INTO challenges (round, twitter1, twitter2, id_user1, id_user2, init, duration)
+					VALUES ('{$c['round']}','{$c['twitter1']}', '{$c['twitter2']}', {$user1['id']}, {$user2['id']}, '{$c['init']}', '{$c['duration']}')";
 				$this->query($query);
 				$return = $this->getInsertedId();
 			} else {
@@ -120,5 +122,17 @@ class MisfitChallenges extends MisfitDbModelAbstract {
 		";
 		
 		return $this->fetchAll($query);
+	}
+	
+	public function getGrandResult($challenge) {
+		$query = "
+			SELECT sum(points1) AS total_points1,
+				sum(points2) AS total_points2
+			FROM challenges
+			WHERE id_user1 = {$challenge['id_user1']}
+				AND id_user2 = {$challenge['id_user2']}
+				AND round > ".($challenge['round']-3)."	
+		";
+		return $this->fetchOne($query);
 	}
 }
