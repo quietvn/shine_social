@@ -17,7 +17,9 @@ foreach ($users as $user) {
 	
 	if (!empty($start_date)) {
 		$query = "
-			UPDATE users SET start_date='{$start_date}'
+			UPDATE users 
+			SET start_date='{$start_date}'
+			WHERE id = {$user['id']}
 		";
 		$users_db->query($query);
 	}
