@@ -3,6 +3,8 @@ include_once ('ExpCheckerAbstract.php');
 class MisfitExpChecker4 extends MisitExpCheckerAbstract {
 	
 	public static $START_TIMER = array('#starttimer', 's', 'start');
+	public static $CHALLENGE = array('challenge', 'c');
+	
 	public function checkTwitterEvent($replies) {
 		$challenge_db = new MisfitChallenges();
 		
@@ -56,7 +58,7 @@ class MisfitExpChecker4 extends MisitExpCheckerAbstract {
 		
 		$result = null;
 		// challenge @abc 70
-		if ($tokens[1] == 'challenge') {
+		if (in_array($tokens[1], self::$CHALLENGE)) {
 			$result['twitter1'] = $reply->user->screen_name;
 			$result['twitter2'] = substr($tokens[2], 1); //remove the @ symbol
 			$result['duration'] = !empty($tokens[3]) ? intval($tokens[3]) : 30;
