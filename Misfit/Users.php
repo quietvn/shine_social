@@ -290,7 +290,8 @@ class MisfitUsers extends MisfitDbModelAbstract {
 			if (!empty($data['syncMode']))
 				$syncMode = $data['syncMode'];
 			
-			$syncs[$syncMode]++;
+			if ($syncMode == 1 || $log['isok'] == 1)
+				$syncs[$syncMode]++;
 		}
 				
 		$result = array();
