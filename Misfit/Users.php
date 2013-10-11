@@ -93,12 +93,13 @@ class MisfitUsers extends MisfitDbModelAbstract {
 			$mongo = MisfitMongo::getInstance($data['id_server'])->collection;
 			$shine_user = $mongo->users->findOne(array('email' => $data['email']));
 			if (!empty($shine_user)) {
-				$query = "INSERT INTO users(id_server,id_shine,email,id_twitter)
-					VALUES ('".$data['id_server']."','".$shine_user['_id']->{'$id'}."', '".$data['email']."', '".$data['id_twitter']."')";
+				$query = "INSERT INTO users(id_server,id_shine,email,id_twitter, start_date)
+					VALUES ('".$data['id_server']."','".$shine_user['_id']->{'$id'}."', '".$data['email']."', '".$data['id_twitter']."'
+						, '".date("Y-m-d")."')";
 				$result = $this->_db->query($query);
 				$id_user = $this->_db->getInsertedId();
-				$this->addNewUserGroups($id_user, $data['groups']);			
-				$result['flash'][] = "Inserted new user having email {$data['email']}!";
+				$this->addNewUserGroups($id_user, $data['groups']);	
+				$result['flash'][] = "Inserted new user having email ".$data['email']."!";
 			} else {
 				$result['flash'][] = "Cannot find Shine user!";
 			}
