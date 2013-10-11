@@ -69,12 +69,12 @@ Experiment:
 	    <td><?php echo $user_db->getAvgPointsBefore($user, $start_date, $end_date);?></td>
 	    <td><?php echo $user_db->getAvgPointsAfter($user, $start_date, $end_date);?></td>
 	    <td><?php $sync = $user_db->getAvgSyncBefore($user, $start_date, $end_date);
-	    		echo "{$sync[1]}";
-	    		//echo "{$sync[1]} - {$sync[2]} - {$sync[3]}"?>
+	    		//echo "{$sync[1]}";
+	    		echo "{$sync[1]} - {$sync[2]} - {$sync[3]}"?>
 	    </td>
 	    <td><?php $sync = $user_db->getAvgSyncAfter($user, $start_date, $end_date);
-				echo "{$sync[1]}";
-	    		//echo "{$sync[1]} - {$sync[2]} - {$sync[3]}"?>
+				//echo "{$sync[1]}";
+	    		echo "{$sync[1]} - {$sync[2]} - {$sync[3]}"?>
 		</td>
     </tr>
 <?php 	endforeach;?>

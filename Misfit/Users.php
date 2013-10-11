@@ -285,7 +285,11 @@ class MisfitUsers extends MisfitDbModelAbstract {
 		while ($logs->hasNext()) {
 			$log = $logs->getNext();
 			$data = $log['data'];
-			$syncs[1]++;
+			$syncMode = 1;
+			if (!empty($data['syncMode']))
+				$syncMode = $data['syncMode'];
+			
+			$syncs[$syncMode]++;
 		}
 				
 		$result = array();
