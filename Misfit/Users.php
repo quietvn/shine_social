@@ -256,7 +256,7 @@ class MisfitUsers extends MisfitDbModelAbstract {
 				$points += round($goal['prgd']['points'] / 2.5);
 		}
 		
-		return ($i==0)?0:round($points / $i, 2);
+		return ($i==0)?0:round($points / $i);
 	}
 	
 	public function getAvgSyncBefore($user, $start, $end) {
