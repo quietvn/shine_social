@@ -21,6 +21,11 @@ $user_db = new MisfitUsers();
 <a href="leaderboard.php">LEADERBOARD</a> |
 <b>REPORT</b>
 <hr>
+
+<span style='color:green'>Green: before exp</span>
+ |
+<span style='color:red'>Red: during exp</span>
+<br>
 Experiment: 
 <select id="f_id_exp" name="f_id_exp" onchange="window.location='?f_id_exp=' + this.value;">
 	<option value="2">2</option>
@@ -37,6 +42,7 @@ Experiment:
 	<?php 	endforeach;
 		endif;?>
 </select>
+<br>
 
 <?php 
 	foreach ($exps as $exp):
@@ -52,30 +58,36 @@ Experiment:
 	    <th>#</th>
 	    <th>Email</th>
 	    <th>Twitter</th>
-	    <th>AVG Points Before</th>
-	    <th>AVG Points After</th>
-	    <th>AVG Sync Before</th>
-	    <th>AVG Sync After</th>
+	    <th>AVG Points</th>
+	    <th>AVG Manual Sync</th>
+	    <th>AVG FG Sync</th>
+	    <th>AVG BG Sync</th>
   	</tr>
 
 <?php	$users = $user_db->getAllByIdGroup($exp['id_group']);
 		$i=0;
 		foreach ($users as $user):
-  		$i++;?>
+  		$i++;
+  		$points_before = $user_db->getAvgPointsBefore($user, $start_date, $end_date);
+  		$points_after = $user_db->getAvgPointsAfter($user, $start_date, $end_date);
+  		$sync_before = $user_db->getAvgSyncBefore($user, $start_date, $end_date);
+  		$sync_after = $user_db->getAvgSyncAfter($user, $start_date, $end_date);?>
 	<tr>
 	    <td><?php echo $i;?></td>
 	    <td><?php echo $user['email'];?></td>
 	    <td><?php echo $user['id_twitter'];?></td>
-	    <td><?php echo $user_db->getAvgPointsBefore($user, $start_date, $end_date);?></td>
-	    <td><?php echo $user_db->getAvgPointsAfter($user, $start_date, $end_date);?></td>
-	    <td><?php $sync = $user_db->getAvgSyncBefore($user, $start_date, $end_date);
-	    		//echo "{$sync[1]}";
-	    		echo "{$sync[1]} - {$sync[2]} - {$sync[3]}"?>
+	    <td>
+	    	<div style='width:40px;float:left;color:green'><?php echo $points_before?></div>
+	    	|
+	    	<span style='color:red'><?php echo $points_after?></span>
 	    </td>
-	    <td><?php $sync = $user_db->getAvgSyncAfter($user, $start_date, $end_date);
-				//echo "{$sync[1]}";
-	    		echo "{$sync[1]} - {$sync[2]} - {$sync[3]}"?>
-		</td>
+	    <?php for($j=1; $j<=3; $j++):?>
+	    	<td>
+	    		<div style='width:40px;float:left;color:green'><?php echo $sync_before[$j];?></div>
+		    	|
+		    	<span style='color:red'><?php echo $sync_after[$j];?></span>
+	    	</td>
+	    <?php endfor;?>
     </tr>
 <?php 	endforeach;?>
 </table><br>

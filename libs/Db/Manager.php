@@ -17,7 +17,7 @@ class DbManager {
 		global $DB_CONFIGS;
 		$this->_namespace = $namespace;
 		$config = $DB_CONFIGS[$namespace];
-		$this->_link = mysql_connect($config['host'], $config['user'], $config['pass']);
+		$this->_link = @mysql_connect($config['host'], $config['user'], $config['pass']);
 		
 		$this->query("SET SESSION time_zone = '".TIMEZONE_OFFSET."';");
 		
