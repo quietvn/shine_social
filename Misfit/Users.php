@@ -191,7 +191,7 @@ class MisfitUsers extends MisfitDbModelAbstract {
 		$weekly_points = $weekly_points;
 		$date = date('Y-m-d', $goal['et']);
 		
-		Logger::log("User {$user['email']} - $date: daily points = $daily_points, weekly points = $weekly_points");
+		//Logger::log("User {$user['email']} - $date: daily points = $daily_points, weekly points = $weekly_points");
 		
 		return $this->query("
 			INSERT INTO leaderboard (id_exp, id_group, last_date, id_user, points, weekly_points)

@@ -91,30 +91,34 @@ class MisfitExpChecker4 extends MisitExpCheckerAbstract {
 	public function checkEvent($exp, $users) {
 		$challenge_db = new MisfitChallenges();
 		foreach ($users as $user) {
-			if ($user['current_score'] > $user['old_score']) { // if new score is updated
+			if ($user['current_score'] != $user['old_score']) { // if new score is updated
 				//check if this user has any challenge to be sync
-				$challenge = $challenge_db->getToBeSync($user);
-				
-				if (!empty($challenge)) {
-					if ($user['id'] == $challenge['id_user1']) {
-						$i = 1;
-					} elseif ($user['id'] == $challenge['id_user2']) {
-						$i = 2;
-					} else { // actually this won't happen
-						continue; 
+				$challenges = $challenge_db->getToBeSync($user);
+			
+				Logger::log('Found '.sizeof($challenges).' challenges to be synced.');
+				if (!empty($challenges)) {
+					foreach ($challenges as $challenge) {	
+						if ($user['id_twitter'] == $challenge['twitter1']) {
+							$i = 1;
+						} elseif ($user['id_twitter'] == $challenge['twitter2']) {
+							$i = 2;
+						} else { // actually this won't happen
+							Logger::log('Cannot sync challenge #'.$challenge['id'].'Something is terribly wrong here!!!');
+							continue; 
+						}
+						
+						Logger::log("Challenge {$challenge['id']}: User {$user['id_twitter']} just synced with {$user['current_score']} points");
+						$challenge_db->updateSync($challenge, $i);
+						$challenge = $challenge_db->getOne($challenge['id']); // get the updated challenge
+						
+						$j = 3 - $i;
+						
+						if ($challenge["start$j"] == null || $challenge["start$j"] == '0000-00-00 00:00:00') {
+							$this->_twitter->send(MisfitMessage::remindUserToStart($challenge, $i, $j));
+						} elseif ($challenge["sync$j"] == null) {
+							$this->_twitter->send(MisfitMessage::remindUserToSync($challenge, $i, $j));
+						}				
 					}
-					
-					Logger::log("Challenge {$challenge['id']}: User {$user['id_twitter']} just synced with {$user['current_score']} points");
-					$challenge_db->updateSync($challenge, $i);
-					$challenge = $challenge_db->getOne($challenge['id']); // get the updated challenge
-					
-					$j = 3 - $i;
-					
-					if ($challenge["start$j"] == null || $challenge["start$j"] == '0000-00-00 00:00:00') {
-						$this->_twitter->send(MisfitMessage::remindUserToStart($challenge, $i, $j));
-					} elseif ($challenge["sync$j"] == null) {
-						$this->_twitter->send(MisfitMessage::remindUserToSync($challenge, $i, $j));
-					}				
 				}
 			}
 		}

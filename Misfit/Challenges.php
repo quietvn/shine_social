@@ -64,11 +64,11 @@ class MisfitChallenges extends MisfitDbModelAbstract {
 	public function getToBeSync($user) {
 		$query = "
 			SELECT * FROM challenges
-			WHERE (id_user1 = {$user['id']} && remind1 IS NOT NULL && points1 IS NULL)
-				OR (id_user2 = {$user['id']} && remind2 IS NOT NULL && points2 IS NULL)
+			WHERE (twitter1 = '{$user['id_twitter']}' && remind1 IS NOT NULL && sync1 IS NULL)
+				OR (twitter2 = '{$user['id_twitter']}' && remind2 IS NOT NULL && sync2 IS NULL)
 		";
 		
-		return $this->fetchOne($query);
+		return $this->fetchAll($query);
 	}
 	
 	public function updatePoints($challenge, $points, $i) {
@@ -117,7 +117,7 @@ class MisfitChallenges extends MisfitDbModelAbstract {
 	 	$query = "
 			SELECT challenges.*, id_shine, id_server, id_twitter FROM challenges
 			INNER JOIN users
-				ON users.id = id_user$i
+				ON users.id_twitter = twitter$i
 			WHERE (TO_SECONDS(NOW()) - TO_SECONDS(sync$i) >= ".self::RESCUE_DELAY."*60 && points$i IS NULL)
 		";
 		
