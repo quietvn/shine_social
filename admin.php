@@ -26,7 +26,8 @@ $groups = $users_db->getGroups();
 ?>
 <b>USERS</b> |
 <a href="leaderboard.php">LEADERBOARD</a> |
-<a href="report.php">REPORT</a>
+<a href="report.php">REPORT</a> |
+<a href="group.php">GROUPS</a>
 <hr>
 <?php 
 if (!empty($flash)):

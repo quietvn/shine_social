@@ -35,9 +35,12 @@ class MisfitExps extends MisfitDbModelAbstract {
 		$where = '';
 		if ($id_exp) $where = " WHERE id_exp = $id_exp";
 		$query = "
-			SELECT DISTINCT id_group
+			SELECT DISTINCT id_group, groups.name
 			FROM group_exps
+			LEFT JOIN groups
+				ON id_group = groups.id
 			$where
+			ORDER BY id_group
 		";
 			
 		return $this->fetchAll($query);
@@ -48,13 +51,20 @@ class MisfitExps extends MisfitDbModelAbstract {
 		if ($id_exp) $where .= " AND id_exp = $id_exp";
 		if ($id_group) $where .= " AND id_group = $id_group";
 		$query = "
-			SELECT *
+			SELECT group_exps.*, groups.name
 			FROM group_exps
+			LEFT JOIN groups
+				ON id_group = groups.id
 			WHERE 1=1
 				$where
 			ORDER BY id_exp, id_group
 		";
 			
-		return $this->fetchAll($query);
+		$groups = $this->fetchAll($query);
+		$result = array();
+		foreach ($groups as $group) {
+			$result[$group['id_group']] = $group;
+		}
+		return $result;
 	}
 }

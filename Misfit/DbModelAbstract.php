@@ -22,4 +22,8 @@ class MisfitDbModelAbstract {
 	public function getInsertedId() {
 		return $this->_db->getInsertedId();
 	}
+	
+	public function escape($string) {
+		return mysql_real_escape_string($string);
+	}
 }

@@ -22,7 +22,8 @@ $last_week = $today - 7*24*3600;
 ?>
 <a href="admin.php">USERS</a> |
 <b>LEADERBOARD</b> |
-<a href="report.php">REPORT</a>
+<a href="report.php">REPORT</a> |
+<a href="group.php">GROUPS</a>
 <hr>
 Experiment: 
 <select id="f_id_exp" name="f_id_exp" onchange="window.location='?f_id_exp=' + this.value;">
@@ -34,14 +35,14 @@ Experiment:
 <select id="f_id_group" name="f_id_group" onchange="window.location='?f_id_exp=<?php echo $f_id_exp?>&f_id_group=' + this.value;">
 	<option value="0">-all-</option>
 	<?php foreach ($groups as $group):?>
-		<option value="<?php echo $group['id_group'];?>"><?php echo $group['id_group'];?></option>
+		<option value="<?php echo $group['id_group'];?>"><?php echo $group['id_group'];?> - <?php echo $group['name'];?></option>
 	<?php endforeach;?>
 </select>
 
 <?php foreach ($boards as $id_group => $users):
 $weekly_total = array();
 ?>
-<h3>Group <?php echo $id_group;?></h3>
+<h3>Group <?php echo $id_group;?> - <?php echo $groups[$id_group]['name'];?></h3>
 
 <?php if ($f_id_exp == 3): $first_user = array_slice($users, 0 , 1);?>
 	
