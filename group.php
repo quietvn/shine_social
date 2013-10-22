@@ -27,7 +27,7 @@ $groups = $exps_db->getGroups();
 ?>
 <a href="admin.php">USERS</a> |
 <a href="leaderboard.php">LEADERBOARD</a> |
-<a href="leaderboard.php">REPORT</a> |
+<a href="report.php">REPORT</a> |
 <b>GROUPS</b>
 <hr>
 <form method="post">
