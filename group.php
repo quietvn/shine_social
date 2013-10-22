@@ -20,6 +20,7 @@ if (isset($_POST['groups'])) {
 		";
 		$exps_db->query($sql);
 	}
+	$flash[] = "Saved successful!";
 }
 
 $groups = $exps_db->getGroups();
@@ -30,6 +31,19 @@ $groups = $exps_db->getGroups();
 <a href="report.php">REPORT</a> |
 <b>GROUPS</b>
 <hr>
+
+<?php 
+if (!empty($flash)):
+?>
+<div style='color: red'>
+	<ul>
+	<?php foreach ($flash as $message):?>
+		<li><?php echo $message;?></li>
+	<?php endforeach;?>
+	</ul>
+</div>
+<?php endif;?>
+
 <form method="post">
 <?php foreach ($groups as $group):?>
 Group <?php echo $group['id_group'];?>: 

@@ -22,7 +22,9 @@ if ($action == 'delete') {
 }
 
 $users = $users_db->getAllByScore();
-$groups = $users_db->getGroups();
+
+$exps = new MisfitExps();
+$groups = $exps->getGroups();
 ?>
 <b>USERS</b> |
 <a href="leaderboard.php">LEADERBOARD</a> |
