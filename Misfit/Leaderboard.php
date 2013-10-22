@@ -42,7 +42,7 @@ class MisfitLeaderboard extends MisfitDbModelAbstract {
 		
 		$last_week = date("Y-m-d", time() - 7*24*3600);
 		$query = "
-			SELECT *, users.id_twitter as user_twitter FROM leaderboard
+			SELECT *, group_exps.id_twitter AS exp_twitter, users.id_twitter AS user_twitter FROM leaderboard
 			INNER JOIN users 
 				ON users.id = leaderboard.id_user
 			INNER JOIN group_exps

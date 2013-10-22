@@ -51,10 +51,12 @@ Experiment:
 		$id_exp = $exp['id_exp'];
 		$id_group = $exp['id_group'];
 		$name = $exp['name'];
+		$id_twitter = $exp['id_twitter'];
 //		$start_date = $exp['participation_date'];
 //		$end_date = !empty($exp['participation_end_date']) ? $exp['participation_end_date'] : date('Y-m-d', time() - 24*3600);
 ?>
-<h3>Experiment #<?php echo $id_exp;?> - Group #<?php echo $id_group;?> - <?php echo $name;?></h3>
+<h3>Experiment #<?php echo $id_exp;?> - Group #<?php echo $id_group;?> - <?php echo $name;?> 
+- <a target='_blank' href='http://www.twitter.com/<?php echo $id_twitter;?>'>@<?php echo $id_twitter;?></a></h3>
 <table cellpadding="5px" cellspacing=0 border="1px;solid">
   	<tr>
 	    <th>#</th>

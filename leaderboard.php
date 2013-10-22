@@ -41,10 +41,13 @@ Experiment:
 
 <?php foreach ($boards as $id_group => $users):
 $weekly_total = array();
+$first_user = array_slice($users, 0 , 1);
+$id_twitter = $first_user['exp_twitter'];
 ?>
-<h3>Group <?php echo $id_group;?> - <?php echo $groups[$id_group]['name'];?></h3>
+<h3>Group <?php echo $id_group;?> - <?php echo $groups[$id_group]['name'];?> 
+- <a target='_blank' href='http://www.twitter.com/<?php echo $id_twitter;?>'>@<?php echo $id_twitter;?></a></h3>
 
-<?php if ($f_id_exp == 3): $first_user = array_slice($users, 0 , 1);?>
+<?php if ($f_id_exp == 3): ?>
 	
     Start date: <?php echo $first_user[0]['start_date'];?><br>
     Goal: <?php echo number_format($first_user[0]['goal']);?><br><br>
