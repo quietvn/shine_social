@@ -42,7 +42,7 @@ Experiment:
 <?php foreach ($boards as $id_group => $users):
 $weekly_total = array();
 $first_user = array_slice($users, 0 , 1);
-$id_twitter = $first_user['exp_twitter'];
+$id_twitter = $first_user[0]['exp_twitter'];
 ?>
 <h3>Group <?php echo $id_group;?> - <?php echo $groups[$id_group]['name'];?> 
 - <a target='_blank' href='http://www.twitter.com/<?php echo $id_twitter;?>'>@<?php echo $id_twitter;?></a></h3>
