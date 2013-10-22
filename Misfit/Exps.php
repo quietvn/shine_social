@@ -43,7 +43,12 @@ class MisfitExps extends MisfitDbModelAbstract {
 			ORDER BY id_group
 		";
 			
-		return $this->fetchAll($query);
+		$groups = $this->fetchAll($query);
+		$result = array();
+		foreach ($groups as $group) {
+			$result[$group['id_group']] = $group;
+		}
+		return $result;
 	}
 	
 	public function getExpGroups($id_exp = 0, $id_group = 0) {
@@ -60,11 +65,6 @@ class MisfitExps extends MisfitDbModelAbstract {
 			ORDER BY id_exp, id_group
 		";
 			
-		$groups = $this->fetchAll($query);
-		$result = array();
-		foreach ($groups as $group) {
-			$result[$group['id_group']] = $group;
-		}
-		return $result;
+		return $this->fetchAll($query);
 	}
 }

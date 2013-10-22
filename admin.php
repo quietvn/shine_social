@@ -59,7 +59,7 @@ Show users in Group:
 <select id="f_id_group" name="f_id_group" onchange="window.location='?f_id_group=' + this.value;">
 	<option value="0">-all-</option>
 	<?php foreach ($groups as $group):?>
-		<option value="<?php echo $group['id_group'];?>"><?php echo $group['id_group'];?></option>
+		<option value="<?php echo $group['id_group'];?>"><?php echo $group['id_group'];?> - <?php echo $group['name'];?></option>
 	<?php endforeach;?>
 </select>
 
