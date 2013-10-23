@@ -8,7 +8,7 @@ class MisfitTimeline extends MisfitDbModelAbstract {
 			'data.eventType' => array('$in' => array(2, 4, 5, 6, 7)));
 		$items = $mongo
 			->timelines_items
-			->find($query, array("data.eventType" => 1, "itype" => 1, 'info.streakNumber' => 1, 'uid' => 1))
+			->find($query, array("data.eventType"=>1, "itype"=>1, 'data.info.streakNumber'=>1, 'uid'=>1, 'ts'=>1))
 			->sort(array('ts' => -1))->limit(20);
 		
 		$result = array();
@@ -38,21 +38,22 @@ class MisfitTimeline extends MisfitDbModelAbstract {
 	
 	public static function getMessage($item, $user, $goal) {
 		$points = isset($goal['prgd']['points']) ? $goal['prgd']['points'] : 0;
+		
 		switch ($item['data']['eventType']) {
 			case 2:
-				return "{$user['email']} hit a goal of {$points} points.";
+				return date("Y-m-d H:i:s", $item['ts']) . " | &nbsp; {$user['email']} hit a goal of {$points} points.";
 				break;
 			case 4:
-				return "{$user['email']} passed 150% of his goal of {$points} points.";
+				return date("Y-m-d H:i:s", $item['ts']) . " | &nbsp; {$user['email']} passed 150% of his goal of {$points} points.";
 				break;
 			case 6:
-				return "{$user['email']} passed 200% of his goal of {$points} points.";
+				return date("Y-m-d H:i:s", $item['ts']) . " | &nbsp; {$user['email']} passed 200% of his goal of {$points} points.";
 				break;
 			case 7:
-				return "{$user['email']} is on a {$item['info']['streakNumber']} day streak!";
+				return date("Y-m-d H:i:s", $item['ts']) . " | &nbsp; {$user['email']} is on a {$item['data']['info']['streakNumber']} day streak!";
 				break;
 			case 5:
-				return "{$user['email']} just reached a new personal best with {$points} points.";
+				return date("Y-m-d H:i:s", $item['ts']) . " | &nbsp; {$user['email']} just reached a new personal best with {$points} points.";
 				break;
 		}
 		
