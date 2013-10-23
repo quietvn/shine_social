@@ -39,6 +39,7 @@ class MisfitTimeline extends MisfitDbModelAbstract {
 	
 	public static function getMessage($item, $user, $goal) {
 		$points = isset($goal['prgd']['points']) ? $goal['prgd']['points'] : 0;
+		$streakNumber = @isset($item['data']['info']['streakNumber']) ? $item['data']['info']['streakNumber'] : '';
 		
 		switch ($item['data']['eventType']) {
 			case 2:
@@ -51,7 +52,7 @@ class MisfitTimeline extends MisfitDbModelAbstract {
 				return date("Y-m-d H:i:s", $item['ts']) . " | &nbsp; {$user['email']} passed 200% of his goal of {$points} points.";
 				break;
 			case 7:
-				return date("Y-m-d H:i:s", $item['ts']) . " | &nbsp; {$user['email']} is on a {$item['data']['info']['streakNumber']} day streak!";
+				return date("Y-m-d H:i:s", $item['ts']) . " | &nbsp; {$user['email']} is on a {$streakNumber} day streak!";
 				break;
 			case 5:
 				return date("Y-m-d H:i:s", $item['ts']) . " | &nbsp; {$user['email']} just reached a new personal best with {$points} points.";
