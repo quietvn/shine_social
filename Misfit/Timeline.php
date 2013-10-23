@@ -4,8 +4,12 @@ class MisfitTimeline extends MisfitDbModelAbstract {
 	
 	public static function getLatestTimeline() {
 		$mongo = MisfitMongo::getInstance(1)->collection;
-		$query = array('itype' => 4);
-		$items = $mongo->timelines_items->find($query)->sort(array('ts' => -1))->limit(20);
+		$query = array('itype' => 4,
+			'data.eventType' => array('$in' => array(2, 4, 5, 6, 7)));
+		$items = $mongo
+			->timelines_items
+			->find($query, array("data.eventType" => 1, "itype" => 1, 'info.streakNumber' => 1, 'uid' => 1))
+			->sort(array('ts' => -1))->limit(20);
 		
 		$result = array();
 		$uids = array();
