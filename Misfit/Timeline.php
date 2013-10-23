@@ -10,7 +10,7 @@ class MisfitTimeline extends MisfitDbModelAbstract {
 		$items = $mongo
 			->timelines_items
 			->find($query, array("data.eventType"=>1, "itype"=>1, 'data.info.streakNumber'=>1, 'uid'=>1, 'ts'=>1))
-			->sort(array('ts' => -1))->limit(20);
+			->sort(array('ts' => -1))->limit(50);
 		
 		$result = array();
 		$uids = array();
