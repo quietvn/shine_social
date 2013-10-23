@@ -29,7 +29,8 @@ $groups = $exps->getGroups();
 <b>USERS</b> |
 <a href="leaderboard.php">LEADERBOARD</a> |
 <a href="report.php">REPORT</a> |
-<a href="group.php">GROUPS</a>
+<a href="group.php">GROUPS</a> |
+<a href="world.php">REST OF THE WORLD</a>
 <hr>
 <?php 
 if (!empty($flash)):

@@ -29,7 +29,9 @@ $groups = $exps_db->getGroups();
 <a href="admin.php">USERS</a> |
 <a href="leaderboard.php">LEADERBOARD</a> |
 <a href="report.php">REPORT</a> |
-<b>GROUPS</b>
+<b>GROUPS</b> |
+<a href="world.php">REST OF THE WORLD</a>
+
 <hr>
 
 <?php 

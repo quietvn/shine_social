@@ -23,7 +23,9 @@ $last_week = $today - 7*24*3600;
 <a href="admin.php">USERS</a> |
 <b>LEADERBOARD</b> |
 <a href="report.php">REPORT</a> |
-<a href="group.php">GROUPS</a>
+<a href="group.php">GROUPS</a> |
+<a href="world.php">REST OF THE WORLD</a>
+
 <hr>
 Experiment: 
 <select id="f_id_exp" name="f_id_exp" onchange="window.location='?f_id_exp=' + this.value;">

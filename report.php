@@ -20,7 +20,9 @@ $user_db = new MisfitUsers();
 <a href="admin.php">USERS</a> |
 <a href="leaderboard.php">LEADERBOARD</a> |
 <b>REPORT</b> |
-<a href="group.php">GROUPS</a>
+<a href="group.php">GROUPS</a> |
+<a href="world.php">REST OF THE WORLD</a>
+
 <hr>
 
 <span style='color:green'>Green: before exp</span>
