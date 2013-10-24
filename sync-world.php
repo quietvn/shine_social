@@ -14,7 +14,7 @@ $last_time = Cache::get("last_timeline");
 Logger::log('STARTED');
 $result = MisfitTimeline::getLatestTimeline($last_time);
 $size = sizeof($result);
-Logger::log("Found {$size} new achievements!");
+Logger::log("Found {$size} new achievements since $last_time | ".date("Y-m-d H:i:s", $last_time)."!");
 if (!empty($result)) {
 	$items = $result['items'];
 	$users = $result['users'];
