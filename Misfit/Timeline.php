@@ -2,14 +2,25 @@
 include_once 'Misfit/DbModelAbstract.php';
 class MisfitTimeline extends MisfitDbModelAbstract {
 	
-	public static function getLatestTimeline() {
+	public static function getLatestTimeline($last_time = null) {
 		$mongo = MisfitMongo::getInstance(1)->collection;
+		$ts = array('$lt' => 1389101723);
+		if (!empty($last_time)) {
+			$ts['$gt'] = $last_time;
+		}
 		$query = array('itype' => 4,
 			'data.eventType' => array('$in' => array(2, 4, 5, 6, 7)),
-			'ts' => array('$lt' => 1389101723));
+			'ts' => $ts);
+
 		$items = $mongo
 			->timelines_items
-			->find($query, array("data.eventType"=>1, "itype"=>1, 'data.info.streakNumber'=>1, 'uid'=>1, 'ts'=>1))
+			->find($query, 
+				array(
+					"data.eventType"=>1, 
+					"itype"=>1, 
+					'data.info.streakNumber'=>1, 
+					'uid'=>1, 
+					'ts'=>1))
 			->sort(array('ts' => -1))->limit(50);
 		
 		$result = array();
@@ -41,21 +52,23 @@ class MisfitTimeline extends MisfitDbModelAbstract {
 		$points = isset($goal['prgd']['points']) ? $goal['prgd']['points'] : 0;
 		$streakNumber = @isset($item['data']['info']['streakNumber']) ? $item['data']['info']['streakNumber'] : '';
 		
+		list($handle, $domain) = explode("@", $user['email']);
+		
 		switch ($item['data']['eventType']) {
 			case 2:
-				return date("Y-m-d H:i:s", $item['ts']) . " | &nbsp; {$user['email']} hit a goal of {$points} points.";
+				return "{$handle} hit a goal of {$points} points.";
 				break;
 			case 4:
-				return date("Y-m-d H:i:s", $item['ts']) . " | &nbsp; {$user['email']} passed 150% of his goal of {$points} points.";
+				return "{$handle} passed 150% of his goal of {$points} points.";
 				break;
 			case 6:
-				return date("Y-m-d H:i:s", $item['ts']) . " | &nbsp; {$user['email']} passed 200% of his goal of {$points} points.";
+				return "{$handle} passed 200% of his goal of {$points} points.";
 				break;
 			case 7:
-				return date("Y-m-d H:i:s", $item['ts']) . " | &nbsp; {$user['email']} is on a {$streakNumber} day streak!";
+				return "{$handle} is on a {$streakNumber} day streak!";
 				break;
 			case 5:
-				return date("Y-m-d H:i:s", $item['ts']) . " | &nbsp; {$user['email']} just reached a new personal best with {$points} points.";
+				return "{$handle} just reached a new personal best with {$points} points.";
 				break;
 		}
 		
