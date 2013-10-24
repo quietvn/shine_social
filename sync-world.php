@@ -11,7 +11,10 @@ include_once 'Misfit/Mongo.php';
 
 $last_time = Cache::get("last_timeline");
 
+Logger::log('STARTED');
 $result = MisfitTimeline::getLatestTimeline($last_time);
+$size = sizeof($result);
+Logger::log("Found {$size} new achievements!");
 if (!empty($result)) {
 	$items = $result['items'];
 	$users = $result['users'];
@@ -35,3 +38,4 @@ if (!empty($result)) {
 		}
 	}
 }
+Logger::log('FINISHED');
