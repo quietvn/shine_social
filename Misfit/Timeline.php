@@ -49,7 +49,7 @@ class MisfitTimeline extends MisfitDbModelAbstract {
 	}
 	
 	public static function getMessage($item, $user, $goal) {
-		$points = isset($goal['prgd']['points']) ? $goal['prgd']['points'] : 0;
+		$points = isset($goal['val']) ? round($goal['val'] / 2.5) : 0;
 		$streakNumber = @isset($item['data']['info']['streakNumber']) ? $item['data']['info']['streakNumber'] : '';
 		
 		list($handle, $domain) = explode("@", $user['email']);
