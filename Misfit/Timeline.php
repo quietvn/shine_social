@@ -21,7 +21,7 @@ class MisfitTimeline extends MisfitDbModelAbstract {
 					'data.info.streakNumber'=>1, 
 					'uid'=>1, 
 					'ts'=>1))
-			->sort(array('ts' => -1))->limit(50);
+			->sort(array('_id' => -1))->limit(50);
 		
 		$result = array();
 		$uids = array();
