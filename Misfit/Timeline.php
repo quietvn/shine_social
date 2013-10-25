@@ -8,9 +8,12 @@ class MisfitTimeline extends MisfitDbModelAbstract {
 		if (!empty($last_time)) {
 			$ts['$gt'] = $last_time;
 		}
-		$query = array('itype' => 4,
-			'data.eventType' => array('$in' => array(2, 4, 5, 6, 7)),
-			'ts' => $ts);
+		$query = array( 
+			'$or' => array(
+						array('itype' => 3),
+						array('itype' => 4,
+							'data.eventType' => array('$in' => array(2, 4, 5, 6, 7))))
+				 );
 
 		$items = $mongo
 			->timelines_items
@@ -19,6 +22,7 @@ class MisfitTimeline extends MisfitDbModelAbstract {
 					"data.eventType"=>1, 
 					"itype"=>1, 
 					'data.info.streakNumber'=>1, 
+					'data.milestoneType'=>1,
 					'uid'=>1, 
 					'ts'=>1))
 			->sort(array('_id' => -1))->limit(50);
@@ -54,22 +58,32 @@ class MisfitTimeline extends MisfitDbModelAbstract {
 		
 		list($handle, $domain) = explode("@", $user['email']);
 		
-		switch ($item['data']['eventType']) {
-			case 2:
-				return "{$handle} hit a goal of {$points} points.";
-				break;
-			case 4:
-				return "{$handle} passed 150% of his goal of {$points} points.";
-				break;
-			case 6:
-				return "{$handle} passed 200% of his goal of {$points} points.";
-				break;
-			case 7:
-				return "{$handle} is on a {$streakNumber} day streak!";
-				break;
-			case 5:
-				return "{$handle} just reached a new personal best with {$points} points.";
-				break;
+		if ($item['itype'] == 4) {
+			switch ($item['data']['eventType']) {
+				case 2:
+					return "{$handle} hit a goal of {$points} points.";
+					break;
+				case 4:
+					return "{$handle} passed 150% of his goal of {$points} points.";
+					break;
+				case 6:
+					return "{$handle} passed 200% of his goal of {$points} points.";
+					break;
+				case 7:
+					return "{$handle} is on a {$streakNumber} day streak!";
+					break;
+				case 5:
+					return "{$handle} just reached a new personal best with {$points} points.";
+					break;
+			}
+		} elseif ($item['itype'] == 3) {
+			$marathons = array(2, 6, 12);
+			$milestone = @isset($item['data']['milestoneType']) ? $item['data']['milestoneType'] : 0;
+			$marathon = $marathons[$milestone];
+			return "{$handle} hit a new achievement ... {$marathon} marathons!";
+			break;
+		} else {
+			return '';
 		}
 		
 	}

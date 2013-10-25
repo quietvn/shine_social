@@ -13,7 +13,7 @@ $last_time = Cache::get("last_timeline");
 
 Logger::log('STARTED');
 $result = MisfitTimeline::getLatestTimeline($last_time);
-$size = sizeof($result);
+$size = sizeof($result['items']);
 Logger::log("Found {$size} new achievements since $last_time | ".date("Y-m-d H:i:s", $last_time)."!");
 if (!empty($result)) {
 	$items = $result['items'];
@@ -23,9 +23,12 @@ if (!empty($result)) {
 	$twitter = MisfitTwitter::getInstance('world');
 	for ($i=sizeof($items)-1; $i>=0; $i--) {
 		$item = $items[$i];
+		
+		if ($item['uid']->getTimestamp() <= $last_time) continue;
+		
 		$user = $users[$item['uid']->{'$id'}];
 		$goal = $goals[$item['uid']->{'$id'}];
-		Cache::save("last_timeline", $item['ts']);
+		Cache::save("last_timeline", $item['uid']->getTimestamp());
 		
 		$message = MisfitTimeline::getMessage($item, $user, $goal);
 		if (!empty($message)) {
